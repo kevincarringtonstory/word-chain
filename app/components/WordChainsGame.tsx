@@ -8,15 +8,24 @@ import dictionary from '@/app/utils/dictionary';
 import { findWordChain } from '@/app/utils/wordChainSolver';
 
 const WordChainsGame: React.FC = () => {
-  const [state, setState] = useState({
+  const [state, setState] = useState<{
+    startWord: string;
+    endWord: string;
+    currentWord: string;
+    inputWord: string;
+    attempts: string[];
+    message: string;
+    gameOver: boolean;
+    solution: string[]; // Change this from string to string[]
+  }>({
     startWord: '',
     endWord: '',
     currentWord: '',
     inputWord: '',
-    attempts: [] as string[],
+    attempts: [],
     message: '',
     gameOver: false,
-    solution: '',
+    solution: [], // Initialize as an empty array
   });
 
   useEffect(() => {
@@ -43,7 +52,7 @@ const WordChainsGame: React.FC = () => {
       attempts: [],
       message: '',
       gameOver: false,
-      solution: solution,
+      solution: solutionPath || [], // Ensure this returns an array
     };
   };
 
