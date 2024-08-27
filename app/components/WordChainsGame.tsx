@@ -7,17 +7,19 @@ import dictionary from '@/app/utils/dictionary';
 
 import { findWordChain } from '@/app/utils/wordChainSolver';
 
+interface GameState {
+  startWord: string;
+  endWord: string;
+  currentWord: string;
+  inputWord: string;
+  attempts: string[];
+  message: string;
+  gameOver: boolean;
+  solution: string[]; // Changed from string to string[]
+}
+
 const WordChainsGame: React.FC = () => {
-  const [state, setState] = useState<{
-    startWord: string;
-    endWord: string;
-    currentWord: string;
-    inputWord: string;
-    attempts: string[];
-    message: string;
-    gameOver: boolean;
-    solution: string[]; // Change this from string to string[]
-  }>({
+  const [state, setState] = useState<GameState>({
     startWord: '',
     endWord: '',
     currentWord: '',
@@ -32,7 +34,7 @@ const WordChainsGame: React.FC = () => {
     setState(getInitialState());
   }, []);
 
-  const getInitialState = () => {
+  const getInitialState = (): GameState => {
     const threeLetterWords = dictionary.filter((word) => word.length === 3);
     let start, end, solution;
 
@@ -52,7 +54,7 @@ const WordChainsGame: React.FC = () => {
       attempts: [],
       message: '',
       gameOver: false,
-      solution: solutionPath || [], // Ensure this returns an array
+      solution: solution || [], // Ensure this returns an array
     };
   };
 
