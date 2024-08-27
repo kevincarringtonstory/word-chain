@@ -31,7 +31,8 @@ const WordChainsGame: React.FC = () => {
   });
 
   useEffect(() => {
-    setState(getInitialState());
+    const initialState = getInitialState();
+    setState(initialState);
   }, []);
 
   const getInitialState = (): GameState => {
@@ -75,7 +76,8 @@ const WordChainsGame: React.FC = () => {
       return;
     }
     if (
-      [...inputWord].filter((char, i) => char !== currentWord[i]).length !== 1
+      inputWord.split('').filter((char, i) => char !== currentWord[i])
+        .length !== 1
     ) {
       setState((prev) => ({
         ...prev,
