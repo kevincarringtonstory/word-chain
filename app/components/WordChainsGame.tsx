@@ -15,7 +15,7 @@ interface GameState {
   attempts: string[];
   message: string;
   gameOver: boolean;
-  solution: string[]; // Changed from string to string[]
+  solution: string[]; // This is correct
 }
 
 const WordChainsGame: React.FC = () => {
@@ -27,7 +27,7 @@ const WordChainsGame: React.FC = () => {
     attempts: [],
     message: '',
     gameOver: false,
-    solution: [], // Initialize as an empty array
+    solution: [], // This is correct
   });
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const WordChainsGame: React.FC = () => {
       attempts: [],
       message: '',
       gameOver: false,
-      solution: solution || [], // Ensure this returns an array
+      solution: solution || [], // This is correct
     };
   };
 
