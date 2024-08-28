@@ -30,6 +30,8 @@ const WordChainsGame: React.FC = () => {
     solution: [], // This is correct
   });
 
+  const [showInstructions, setShowInstructions] = useState(false);
+
   useEffect(() => {
     const initialState = getInitialState();
     setState(initialState);
@@ -110,45 +112,135 @@ const WordChainsGame: React.FC = () => {
     }));
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   const startNewGame = () => {
     setState(getInitialState());
   };
 
+  const renderKeyboard = () => {
+    const rows = [
+      ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+      ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+      ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫'],
+    ];
+
+    return (
+      <div className="mt-4">
+        {rows.map((row, rowIndex) => (
+          <div key={rowIndex} className="flex justify-center mb-2">
+            {row.map((key) => (
+              <button
+                key={key}
+                className="mx-1 p-2 bg-gray-200 rounded text-sm font-bold"
+                onClick={() => {
+                  if (key === '⌫') {
+                    setState((prev) => ({
+                      ...prev,
+                      inputWord: prev.inputWord.slice(0, -1),
+                    }));
+                  } else if (key === 'ENTER') {
+                    handleSubmit();
+                  } else {
+                    setState((prev) => ({
+                      ...prev,
+                      inputWord: prev.inputWord + key.toLowerCase(),
+                    }));
+                  }
+                }}
+              >
+                {key}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
-    <div className="font-sans max-w-md mx-auto p-5">
-      <h1 className="text-2xl mb-5">Word Chains Game</h1>
-      <p>
-        Start word: <strong>{state.startWord}</strong>
-      </p>
-      <p>
-        End word: <strong>{state.endWord}</strong>
-      </p>
-      <p>
-        Current word: <strong>{state.currentWord}</strong>
-      </p>
-      <p>Attempts: {state.attempts.length}/10</p>
+    <div className="font-sans max-w-md mx-auto p-5 bg-white">
+      <header className="flex justify-between items-center mb-4 pb-2 border-b">
+        <button
+          className="text-gray-600 font-bold text-xl"
+          onClick={() => setShowInstructions(true)}
+        >
+          ?
+        </button>
+        <h1 className="text-3xl font-bold">WORD CHAIN</h1>
+        <div className="flex">
+          <button className="mr-2">📊</button>
+          <button>⚙️</button>
+        </div>
+      </header>
+
+      {showInstructions && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg max-w-sm">
+            <h2 className="text-xl font-bold mb-2">How to Play</h2>
+            <p>
+              Change one letter at a time to transform the start word into the
+              end word.
+            </p>
+            <p className="mt-2">
+              You have 10 attempts to reach the target word.
+            </p>
+            <button
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+              onClick={() => setShowInstructions(false)}
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="mb-4">
+        <p>
+          Start: <strong>{state.startWord}</strong> | End:{' '}
+          <strong>{state.endWord}</strong>
+        </p>
+        <p>
+          Current: <strong>{state.currentWord}</strong>
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {Array(10)
+          .fill(null)
+          .map((_, index) => (
+            <div
+              key={index}
+              className={`border p-2 text-center ${
+                index < state.attempts.length ? 'bg-gray-100' : ''
+              }`}
+            >
+              {state.attempts[index] || ''}
+            </div>
+          ))}
+      </div>
 
       {!state.gameOver && (
-        <div className="my-4">
+        <div className="mb-4">
           <input
             type="text"
             value={state.inputWord}
             onChange={handleInputChange}
-            placeholder="Enter your next word"
-            className="mr-2 p-2 border rounded"
+            onKeyPress={handleKeyPress}
+            placeholder="Enter word"
+            className="w-full p-2 border rounded"
+            maxLength={state.startWord.length}
           />
-          <button
-            onClick={handleSubmit}
-            className="p-2 bg-blue-500 text-white rounded"
-          >
-            Submit
-          </button>
         </div>
       )}
 
       {state.message && (
         <p
-          className={`mt-4 p-2 rounded ${
+          className={`mb-4 p-2 rounded ${
             state.message.includes('Congratulations')
               ? 'bg-green-100'
               : state.message.includes('Sorry')
@@ -160,25 +252,16 @@ const WordChainsGame: React.FC = () => {
         </p>
       )}
 
-      {state.attempts.length > 0 && (
-        <div className="mt-4">
-          <h2 className="text-xl">Your attempts:</h2>
-          <ol className="list-decimal list-inside">
-            {state.attempts.map((attempt, index) => (
-              <li key={index}>{attempt}</li>
-            ))}
-          </ol>
-        </div>
-      )}
-
       {state.gameOver && (
         <button
           onClick={startNewGame}
-          className="mt-4 p-2 bg-green-500 text-white rounded"
+          className="w-full p-2 bg-green-500 text-white rounded"
         >
           Start New Game
         </button>
       )}
+
+      {renderKeyboard()}
     </div>
   );
 };

@@ -13,7 +13,7 @@ export default function GamePage() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-purple-200">
+    <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <WordChainsGame />
       {showInstructions && (
         <GameInstructions onClose={() => setShowInstructions(false)} />
