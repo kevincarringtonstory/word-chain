@@ -67,6 +67,12 @@ const WordChainsGame: React.FC = () => {
     setState((prev) => ({ ...prev, inputWord: e.target.value.toLowerCase() }));
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = () => {
     const { currentWord, inputWord, endWord, attempts } = state;
 
@@ -110,12 +116,6 @@ const WordChainsGame: React.FC = () => {
         : 'Valid word! Keep going.',
       gameOver: gameOver,
     }));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
-    }
   };
 
   const startNewGame = () => {
@@ -163,16 +163,16 @@ const WordChainsGame: React.FC = () => {
   };
 
   return (
-    <div className="font-sans max-w-md mx-auto p-5 bg-white">
-      <header className="flex justify-between items-center mb-4 pb-2 border-b">
+    <div className="font-sans w-full max-w-md mx-auto p-5 flex flex-col items-center">
+      <header className="w-full flex justify-between items-center mb-4 pb-2 border-b">
         <button
-          className="text-gray-600 font-bold text-xl"
+          className="text-gray-600 font-bold text-xl w-8"
           onClick={() => setShowInstructions(true)}
         >
           ?
         </button>
-        <h1 className="text-3xl font-bold">WORD CHAIN</h1>
-        <div className="flex">
+        <h1 className="text-3xl font-bold text-center flex-grow">WORD CHAIN</h1>
+        <div className="flex w-8 justify-end">
           <button className="mr-2">📊</button>
           <button>⚙️</button>
         </div>
@@ -199,7 +199,7 @@ const WordChainsGame: React.FC = () => {
         </div>
       )}
 
-      <div className="mb-4">
+      <div className="w-full text-center mb-4">
         <p>
           Start: <strong>{state.startWord}</strong> | End:{' '}
           <strong>{state.endWord}</strong>
@@ -209,13 +209,13 @@ const WordChainsGame: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-4">
+      <div className="grid grid-cols-5 gap-2 mb-4">
         {Array(10)
           .fill(null)
           .map((_, index) => (
             <div
               key={index}
-              className={`border p-2 text-center ${
+              className={`border p-2 text-center h-10 flex items-center justify-center ${
                 index < state.attempts.length ? 'bg-gray-100' : ''
               }`}
             >
