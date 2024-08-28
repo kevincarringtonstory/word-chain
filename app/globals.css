@@ -23,3 +23,21 @@ body {
     text-wrap: balance;
   }
 }
+
+@layer base {
+  input,
+  textarea,
+  button,
+  select,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on focus in iOS */
+  }
+}

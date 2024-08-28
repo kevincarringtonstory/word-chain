@@ -163,105 +163,114 @@ const WordChainsGame: React.FC = () => {
   };
 
   return (
-    <div className="font-sans w-full max-w-md mx-auto p-5 flex flex-col items-center">
-      <header className="w-full flex justify-between items-center mb-4 pb-2 border-b">
+    <div className="flex flex-col min-h-screen">
+      <header className="w-full bg-white shadow-sm flex items-center px-2 sm:px-4 py-2 sm:py-3 sticky top-0 z-10">
         <button
-          className="text-gray-600 font-bold text-xl w-8"
+          className="text-gray-600 font-bold text-lg sm:text-xl p-2"
           onClick={() => setShowInstructions(true)}
         >
           ?
         </button>
-        <h1 className="text-3xl font-bold text-center flex-grow">WORD CHAIN</h1>
-        <div className="flex w-8 justify-end">
-          <button className="mr-2">📊</button>
-          <button>⚙️</button>
+        <h1 className="text-2xl sm:text-3xl font-bold flex-grow text-center">
+          WORD CHAIN
+        </h1>
+        <div className="flex">
+          <button className="mr-2 p-2">📊</button>
+          <button className="p-2">⚙️</button>
         </div>
       </header>
 
-      {showInstructions && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-lg max-w-sm">
-            <h2 className="text-xl font-bold mb-2">How to Play</h2>
-            <p>
-              Change one letter at a time to transform the start word into the
-              end word.
-            </p>
-            <p className="mt-2">
-              You have 10 attempts to reach the target word.
-            </p>
-            <button
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
-              onClick={() => setShowInstructions(false)}
-            >
-              Got it!
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="w-full text-center mb-4">
-        <p>
-          Start: <strong>{state.startWord}</strong> | End:{' '}
-          <strong>{state.endWord}</strong>
-        </p>
-        <p>
-          Current: <strong>{state.currentWord}</strong>
-        </p>
-      </div>
-
-      <div className="grid grid-cols-5 gap-2 mb-4">
-        {Array(10)
-          .fill(null)
-          .map((_, index) => (
-            <div
-              key={index}
-              className={`border p-2 text-center h-10 flex items-center justify-center ${
-                index < state.attempts.length ? 'bg-gray-100' : ''
-              }`}
-            >
-              {state.attempts[index] || ''}
+      <main className="flex-grow font-sans w-full max-w-md mx-auto p-2 sm:p-5">
+        {showInstructions && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-4 rounded-lg max-w-sm">
+              <h2 className="text-xl font-bold mb-2">How to Play</h2>
+              <p>
+                Change one letter at a time to transform the start word into the
+                end word.
+              </p>
+              <p className="mt-2">
+                You have 10 attempts to reach the target word.
+              </p>
+              <button
+                className="mt-4 p-2 bg-blue-500 text-white rounded"
+                onClick={() => setShowInstructions(false)}
+              >
+                Got it!
+              </button>
             </div>
-          ))}
-      </div>
+          </div>
+        )}
 
-      {!state.gameOver && (
-        <div className="mb-4">
-          <input
-            type="text"
-            value={state.inputWord}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter word"
-            className="w-full p-2 border rounded"
-            maxLength={state.startWord.length}
-          />
+        <div className="mb-6 text-center">
+          <div className="flex justify-center items-center space-x-4">
+            <div className="text-2xl font-bold p-3 bg-blue-100 rounded-lg">
+              {state.startWord}
+            </div>
+            <div className="text-xl">➔</div>
+            <div className="text-2xl font-bold p-3 bg-green-100 rounded-lg">
+              {state.endWord}
+            </div>
+          </div>
+          <p className="mt-4 text-lg">
+            Current: <strong>{state.currentWord}</strong>
+          </p>
         </div>
-      )}
 
-      {state.message && (
-        <p
-          className={`mb-4 p-2 rounded ${
-            state.message.includes('Congratulations')
-              ? 'bg-green-100'
-              : state.message.includes('Sorry')
-              ? 'bg-red-100'
-              : 'bg-blue-100'
-          }`}
-        >
-          {state.message}
-        </p>
-      )}
+        <div className="grid grid-cols-5 gap-2 mb-4">
+          {Array(10)
+            .fill(null)
+            .map((_, index) => (
+              <div
+                key={index}
+                className={`border p-2 text-center h-10 flex items-center justify-center ${
+                  index < state.attempts.length ? 'bg-gray-100' : ''
+                }`}
+              >
+                {state.attempts[index] || ''}
+              </div>
+            ))}
+        </div>
 
-      {state.gameOver && (
-        <button
-          onClick={startNewGame}
-          className="w-full p-2 bg-green-500 text-white rounded"
-        >
-          Start New Game
-        </button>
-      )}
+        {!state.gameOver && (
+          <div className="mb-4">
+            <input
+              type="text"
+              value={state.inputWord}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+              placeholder="Enter word"
+              className="w-full p-2 border rounded"
+              maxLength={state.startWord.length}
+            />
+          </div>
+        )}
 
-      {renderKeyboard()}
+        {state.message && (
+          <p
+            className={`mb-4 p-2 rounded ${
+              state.message.includes('Congratulations')
+                ? 'bg-green-100'
+                : state.message.includes('Sorry')
+                ? 'bg-red-100'
+                : 'bg-blue-100'
+            }`}
+          >
+            {state.message}
+          </p>
+        )}
+
+        {state.gameOver && (
+          <button
+            onClick={startNewGame}
+            className="w-full p-2 bg-green-500 text-white rounded"
+          >
+            Start New Game
+          </button>
+        )}
+
+        {renderKeyboard()}
+      </main>
     </div>
   );
 };
