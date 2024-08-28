@@ -290,6 +290,9 @@ const WordChainsGame: React.FC = () => {
         <Notification
           message={state.notificationMessage}
           isVisible={state.showNotification}
+          onHide={() =>
+            setState((prev) => ({ ...prev, showNotification: false }))
+          }
         />
       </main>
     </div>
