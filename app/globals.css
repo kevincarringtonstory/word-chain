@@ -41,3 +41,19 @@ body {
     font-size: 16px; /* Prevents zoom on focus in iOS */
   }
 }
+
+@keyframes spin-word {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(180deg);
+  }
+  100% {
+    transform: rotateX(360deg);
+  }
+}
+
+.spin-animation {
+  animation: spin-word 0.5s ease-in-out;
+}

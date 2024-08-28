@@ -7,6 +7,8 @@ import dictionary from '@/app/utils/dictionary';
 
 import { findWordChain } from '@/app/utils/wordChainSolver';
 
+import Notification from './Notification';
+
 interface GameState {
   startWord: string;
   endWord: string;
@@ -16,6 +18,8 @@ interface GameState {
   message: string;
   gameOver: boolean;
   solution: string[]; // This is correct
+  notificationMessage: string;
+  showNotification: boolean;
 }
 
 const WordChainsGame: React.FC = () => {
@@ -28,6 +32,8 @@ const WordChainsGame: React.FC = () => {
     message: '',
     gameOver: false,
     solution: [], // This is correct
+    notificationMessage: '',
+    showNotification: false,
   });
 
   const [showInstructions, setShowInstructions] = useState(false);
@@ -58,6 +64,8 @@ const WordChainsGame: React.FC = () => {
       message: '',
       gameOver: false,
       solution: solution || [], // This is correct
+      notificationMessage: '',
+      showNotification: false,
     };
   };
 
@@ -77,27 +85,18 @@ const WordChainsGame: React.FC = () => {
     const { currentWord, inputWord, endWord, attempts } = state;
 
     if (inputWord.length !== currentWord.length) {
-      setState((prev) => ({
-        ...prev,
-        message: 'The word must be the same length as the current word.',
-      }));
+      showNotification('Must be 3 letters');
       return;
     }
     if (
       inputWord.split('').filter((char, i) => char !== currentWord[i])
         .length !== 1
     ) {
-      setState((prev) => ({
-        ...prev,
-        message: 'You can only change one letter at a time.',
-      }));
+      showNotification('Only one letter change.');
       return;
     }
     if (!isValidWord(inputWord)) {
-      setState((prev) => ({
-        ...prev,
-        message: "That's not a valid word in our dictionary.",
-      }));
+      showNotification('Not in word list');
       return;
     }
 
@@ -109,13 +108,35 @@ const WordChainsGame: React.FC = () => {
       currentWord: inputWord,
       inputWord: '',
       attempts: newAttempts,
-      message: gameOver
-        ? inputWord === endWord
-          ? `Congratulations! You've reached the target word in ${newAttempts.length} moves!`
-          : `Sorry, you've used all 10 attempts. The target word was '${endWord}'.`
-        : 'Valid word! Keep going.',
       gameOver: gameOver,
     }));
+
+    if (gameOver) {
+      if (inputWord === endWord) {
+        showNotification(
+          `Congratulations! You've reached the target word in ${newAttempts.length} moves!`
+        );
+      } else {
+        showNotification(
+          `Sorry, you've used all 10 attempts. The target word was '${endWord}'.`
+        );
+      }
+    }
+  };
+
+  const showNotification = (message: string) => {
+    setState((prev) => ({
+      ...prev,
+      notificationMessage: message,
+      showNotification: true,
+    }));
+
+    setTimeout(() => {
+      setState((prev) => ({
+        ...prev,
+        showNotification: false,
+      }));
+    }, 2000);
   };
 
   const startNewGame = () => {
@@ -204,8 +225,17 @@ const WordChainsGame: React.FC = () => {
 
         <div className="mb-6 text-center">
           <div className="flex justify-center items-center space-x-4">
-            <div className="text-2xl font-bold p-3 bg-blue-100 rounded-lg">
-              {state.startWord}
+            <div
+              key={
+                state.attempts.length > 0
+                  ? state.attempts[state.attempts.length - 1]
+                  : state.startWord
+              }
+              className="text-2xl font-bold p-3 bg-blue-100 rounded-lg spin-animation"
+            >
+              {state.attempts.length > 0
+                ? state.attempts[state.attempts.length - 1]
+                : state.startWord}
             </div>
             <div className="text-xl">➔</div>
             <div className="text-2xl font-bold p-3 bg-green-100 rounded-lg">
@@ -213,7 +243,7 @@ const WordChainsGame: React.FC = () => {
             </div>
           </div>
           <p className="mt-4 text-lg">
-            Current: <strong>{state.currentWord}</strong>
+            Starting Word: <strong>{state.startWord}</strong>
           </p>
         </div>
 
@@ -246,20 +276,6 @@ const WordChainsGame: React.FC = () => {
           </div>
         )}
 
-        {state.message && (
-          <p
-            className={`mb-4 p-2 rounded ${
-              state.message.includes('Congratulations')
-                ? 'bg-green-100'
-                : state.message.includes('Sorry')
-                ? 'bg-red-100'
-                : 'bg-blue-100'
-            }`}
-          >
-            {state.message}
-          </p>
-        )}
-
         {state.gameOver && (
           <button
             onClick={startNewGame}
@@ -270,6 +286,11 @@ const WordChainsGame: React.FC = () => {
         )}
 
         {renderKeyboard()}
+
+        <Notification
+          message={state.notificationMessage}
+          isVisible={state.showNotification}
+        />
       </main>
     </div>
   );

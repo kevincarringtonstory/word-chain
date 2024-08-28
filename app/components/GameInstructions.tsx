@@ -10,9 +10,7 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({ onClose }) => {
       <div className="bg-white rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white z-10 p-4 border-b">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl sm:text-3xl font-bold">
-              How to Play Word Chain
-            </h2>
+            <h2 className="text-2xl sm:text-3xl font-bold">How to Play</h2>
             <button onClick={onClose} className="text-2xl sm:text-3xl">
               &times;
             </button>
@@ -20,11 +18,14 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({ onClose }) => {
         </div>
         <div className="p-4 sm:p-6 space-y-4">
           <div className="space-y-2 sm:space-y-4">
-            <p>1. Start with the given word and change one letter at a time.</p>
             <p>
-              2. Each new word must be a valid 3-letter word in the dictionary.
+              1. Start with the given word and change one letter at a time to
+              reach the End word.
             </p>
-            <p>3. Try to reach the target word in 10 moves or less.</p>
+            <p>2. Each new word must be a valid 3-letter word.</p>
+            <p>
+              3. Reach the target word in 10 moves or less for higher score.
+            </p>
           </div>
           <hr className="my-4 sm:my-6" />
           <div>
