@@ -67,6 +67,8 @@ body {
   height: 58px;
   user-select: none;
   transition: background-color 0.3s ease;
+  touch-action: manipulation;
+  min-width: 24px;
 }
 
 .keyboard button:hover {
@@ -75,4 +77,21 @@ body {
 
 .keyboard button:active {
   background-color: #9ca3af;
+}
+
+@media (max-width: 360px) {
+  .keyboard button {
+    min-width: 20px;
+    font-size: 10px;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#__next {
+  height: 100%;
 }

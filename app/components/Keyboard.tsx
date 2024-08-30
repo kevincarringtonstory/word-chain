@@ -29,24 +29,38 @@ const Keyboard: React.FC<KeyboardProps> = ({
     }
   };
 
+  const BackspaceIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className="w-6 h-6"
+    >
+      <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z" />
+    </svg>
+  );
+
   return (
-    <div className="keyboard mt-4">
+    <div className="keyboard w-full max-w-lg mx-auto px-1 py-2 bg-white">
       {keys.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-center mb-2">
           {row.map((key) => (
             <button
               key={key}
-              className={`mx-1 px-3 py-2 rounded ${
-                key === 'ENTER' || key === 'BACKSPACE'
-                  ? 'bg-gray-300 text-gray-800 font-bold'
-                  : 'bg-gray-200 text-gray-800'
-              } ${
-                disabledKeys.has(key) ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              className={`
+                m-0.5 px-1 py-3 rounded text-sm font-bold
+                ${
+                  key === 'ENTER' || key === 'BACKSPACE'
+                    ? 'w-auto flex-grow bg-gray-300 text-gray-800'
+                    : 'w-8 sm:w-10 bg-gray-200 text-gray-800'
+                }
+                ${disabledKeys.has(key) ? 'opacity-50 cursor-not-allowed' : ''}
+                active:bg-gray-400 transition-colors duration-100
+                flex items-center justify-center uppercase
+              `}
               onClick={() => handleKeyClick(key)}
               disabled={disabledKeys.has(key)}
             >
-              {key}
+              {key === 'BACKSPACE' ? <BackspaceIcon /> : key}
             </button>
           ))}
         </div>

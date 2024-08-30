@@ -38,6 +38,14 @@ const WordChainsGame: React.FC = () => {
   useEffect(() => {
     const initialState = getInitialState();
     setState(initialState);
+
+    // Add event listener for physical keyboard
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const getInitialState = (): GameState => {
@@ -160,6 +168,19 @@ const WordChainsGame: React.FC = () => {
     handleSubmit();
   };
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (state.gameOver) return;
+
+    const key = event.key.toUpperCase();
+    if (key === 'ENTER') {
+      handleSubmit();
+    } else if (key === 'BACKSPACE') {
+      handleBackspace();
+    } else if (/^[A-Z]$/.test(key)) {
+      handleKeyPress(key);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white">
       <header className="w-full bg-white shadow-sm flex items-center px-2 sm:px-4 py-2 sm:py-3 sticky top-0 z-10">
@@ -178,8 +199,8 @@ const WordChainsGame: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-grow overflow-y-auto">
-        <div className="font-sans w-full max-w-md mx-auto p-2 sm:p-5 flex flex-col justify-start">
+      <main className="flex-grow overflow-y-auto flex flex-col justify-between">
+        <div className="font-sans w-full max-w-md mx-auto p-2 sm:p-5 flex flex-col">
           {showInstructions && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <div className="bg-white p-4 rounded-lg max-w-sm">
@@ -241,7 +262,7 @@ const WordChainsGame: React.FC = () => {
           </div>
 
           {!state.gameOver && (
-            <div className="mb-4">
+            <div className="mb-2">
               <input
                 type="text"
                 value={state.inputWord}
@@ -259,18 +280,18 @@ const WordChainsGame: React.FC = () => {
             </div>
           )}
         </div>
-      </main>
 
-      {!state.gameOver && (
-        <div className="w-full">
-          <Keyboard
-            onKeyPress={handleKeyPress}
-            onEnter={handleEnter}
-            onBackspace={handleBackspace}
-            disabledKeys={new Set()} // Implement logic for disabled keys if needed
-          />
-        </div>
-      )}
+        {!state.gameOver && (
+          <div className="w-full mt-auto">
+            <Keyboard
+              onKeyPress={handleKeyPress}
+              onEnter={handleEnter}
+              onBackspace={handleBackspace}
+              disabledKeys={new Set()} // Implement logic for disabled keys if needed
+            />
+          </div>
+        )}
+      </main>
 
       <Notification
         message={state.notificationMessage}
