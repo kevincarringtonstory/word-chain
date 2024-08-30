@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import dictionary from '@/app/utils/dictionary';
+import { dictionary, fourLetterWords } from '@/app/utils/dictionary';
 import { findWordChain } from '@/app/utils/wordChainSolver';
 import Notification from './Notification';
 import Keyboard from './Keyboard';
+import Settings from './Settings';
+import Statistics from './Statistics'; // Add this line
 
 interface GameState {
   startWord: string;
@@ -34,6 +36,14 @@ const WordChainsGame: React.FC = () => {
   });
 
   const [showInstructions, setShowInstructions] = useState(false);
+  const [wordLength, setWordLength] = useState(3);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showStatistics, setShowStatistics] = useState(false);
+
+  const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [wins, setWins] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [maxStreak, setMaxStreak] = useState(0);
 
   useEffect(() => {
     const initialState = getInitialState();
@@ -46,18 +56,40 @@ const WordChainsGame: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
+  }, [wordLength]);
+
+  useEffect(() => {
+    const savedStats = localStorage.getItem('wordChainStats');
+    if (savedStats) {
+      const { gamesPlayed, wins, currentStreak, maxStreak } =
+        JSON.parse(savedStats);
+      setGamesPlayed(gamesPlayed);
+      setWins(wins);
+      setCurrentStreak(currentStreak);
+      setMaxStreak(maxStreak);
+    }
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem(
+      'wordChainStats',
+      JSON.stringify({
+        gamesPlayed,
+        wins,
+        currentStreak,
+        maxStreak,
+      })
+    );
+  }, [gamesPlayed, wins, currentStreak, maxStreak]);
+
   const getInitialState = (): GameState => {
-    const threeLetterWords = dictionary.filter((word) => word.length === 3);
+    const validWords = wordLength === 3 ? dictionary : fourLetterWords;
     let start, end, solution;
 
     do {
-      start =
-        threeLetterWords[Math.floor(Math.random() * threeLetterWords.length)];
-      end =
-        threeLetterWords[Math.floor(Math.random() * threeLetterWords.length)];
-      solution = findWordChain(start, end, dictionary);
+      start = validWords[Math.floor(Math.random() * validWords.length)];
+      end = validWords[Math.floor(Math.random() * validWords.length)];
+      solution = findWordChain(start, end, validWords);
     } while (start === end || !solution);
 
     return {
@@ -74,7 +106,10 @@ const WordChainsGame: React.FC = () => {
     };
   };
 
-  const isValidWord = (word: string) => dictionary.includes(word);
+  const isValidWord = (word: string) =>
+    wordLength === 3
+      ? dictionary.includes(word)
+      : fourLetterWords.includes(word);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState((prev) => ({ ...prev, inputWord: e.target.value.toLowerCase() }));
@@ -83,8 +118,8 @@ const WordChainsGame: React.FC = () => {
   const handleSubmit = () => {
     const { currentWord, inputWord, endWord, attempts } = state;
 
-    if (inputWord.length !== currentWord.length) {
-      showNotification('Must be 3 letters');
+    if (inputWord.length !== wordLength) {
+      showNotification(`Must be ${wordLength} letters`);
       return;
     }
     if (
@@ -111,11 +146,16 @@ const WordChainsGame: React.FC = () => {
     }));
 
     if (gameOver) {
+      setGamesPlayed((prev) => prev + 1);
       if (inputWord === endWord) {
+        setWins((prev) => prev + 1);
+        setCurrentStreak((prev) => prev + 1);
+        setMaxStreak((prev) => Math.max(prev, currentStreak + 1));
         showNotification(
           `Congratulations! You've reached the target word in ${newAttempts.length} moves!`
         );
       } else {
+        setCurrentStreak(0);
         showNotification(
           `Sorry, you've used all 10 attempts. The target word was '${endWord}'.`
         );
@@ -148,7 +188,7 @@ const WordChainsGame: React.FC = () => {
     setState((prev) => ({
       ...prev,
       inputWord:
-        prev.inputWord.length < 3
+        prev.inputWord.length < wordLength
           ? prev.inputWord + key.toLowerCase()
           : prev.inputWord,
     }));
@@ -181,21 +221,61 @@ const WordChainsGame: React.FC = () => {
     }
   };
 
+  const handleWordLengthChange = (length: number) => {
+    setWordLength(length);
+    setState(getInitialState());
+    setShowSettings(false);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white">
-      <header className="w-full bg-white shadow-sm flex items-center px-2 sm:px-4 py-2 sm:py-3 sticky top-0 z-10">
+      <header className="w-full bg-white shadow-sm flex items-center justify-between px-4 py-3 sticky top-0 z-10">
         <button
           className="text-gray-600 font-bold text-lg sm:text-xl p-2"
           onClick={() => setShowInstructions(true)}
         >
-          ?
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+          >
+            <path
+              fill="var(--color-tone-3)"
+              d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"
+            ></path>
+          </svg>
         </button>
-        <h1 className="text-2xl sm:text-3xl font-bold flex-grow text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold absolute left-1/2 transform -translate-x-1/2">
           WORD CHAIN
         </h1>
         <div className="flex">
-          <button className="mr-2 p-2">📊</button>
-          <button className="p-2">⚙️</button>
+          <button className="mr-2 p-2" onClick={() => setShowStatistics(true)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+            >
+              <path
+                fill="var(--color-tone-3)"
+                d="M16,11V3H8v6H2v12h20V11H16z M10,5h4v14h-4V5z M4,11h4v8H4V11z M20,19h-4v-6h4V19z"
+              ></path>
+            </svg>
+          </button>
+          <button className="p-2" onClick={() => setShowSettings(true)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+            >
+              <path
+                fill="var(--color-tone-3)"
+                d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"
+              ></path>
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -223,25 +303,25 @@ const WordChainsGame: React.FC = () => {
           )}
 
           <div className="mb-6 text-center">
-            <div className="flex justify-center items-center space-x-4">
+            <div className="flex justify-center items-center space-x-6 mb-4">
               <div
                 key={
                   state.attempts.length > 0
                     ? state.attempts[state.attempts.length - 1]
                     : state.startWord
                 }
-                className="text-2xl font-bold p-3 bg-blue-100 rounded-lg spin-animation"
+                className="text-4xl font-bold p-4 bg-blue-100 rounded-lg shadow-md spin-animation"
               >
                 {state.attempts.length > 0
                   ? state.attempts[state.attempts.length - 1]
                   : state.startWord}
               </div>
-              <div className="text-xl">➔</div>
-              <div className="text-2xl font-bold p-3 bg-green-100 rounded-lg">
+              <div className="text-3xl font-bold">➔</div>
+              <div className="text-4xl font-bold p-4 bg-green-100 rounded-lg shadow-md">
                 {state.endWord}
               </div>
             </div>
-            <p className="mt-4 text-lg">
+            <p className="mt-4 text-xl">
               Starting Word: <strong>{state.startWord}</strong>
             </p>
           </div>
@@ -274,7 +354,7 @@ const WordChainsGame: React.FC = () => {
                 }
                 placeholder="Enter word"
                 className="w-full p-2 border rounded"
-                maxLength={state.startWord.length}
+                maxLength={wordLength}
                 readOnly
               />
             </div>
@@ -309,6 +389,26 @@ const WordChainsGame: React.FC = () => {
           setState((prev) => ({ ...prev, showNotification: false }))
         }
       />
+
+      {showSettings && (
+        <Settings
+          wordLength={wordLength}
+          onWordLengthChange={handleWordLengthChange}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
+
+      {showStatistics && (
+        <Statistics
+          gamesPlayed={gamesPlayed}
+          winPercentage={
+            gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 100) : 0
+          }
+          currentStreak={currentStreak}
+          maxStreak={maxStreak}
+          onClose={() => setShowStatistics(false)}
+        />
+      )}
     </div>
   );
 };
