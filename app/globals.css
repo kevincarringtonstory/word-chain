@@ -57,3 +57,22 @@ body {
 .spin-animation {
   animation: spin-word 0.5s ease-in-out;
 }
+
+.keyboard {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.keyboard button {
+  height: 58px;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.keyboard button:hover {
+  background-color: #d1d5db;
+}
+
+.keyboard button:active {
+  background-color: #9ca3af;
+}

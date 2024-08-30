@@ -1,13 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-
-// Import a dictionary of words (you'll need to create this file)
 import dictionary from '@/app/utils/dictionary';
-
 import { findWordChain } from '@/app/utils/wordChainSolver';
-
 import Notification from './Notification';
+import Keyboard from './Keyboard';
 
 interface GameState {
   startWord: string;
@@ -17,7 +14,7 @@ interface GameState {
   attempts: string[];
   message: string;
   gameOver: boolean;
-  solution: string[]; // This is correct
+  solution: string[];
   notificationMessage: string;
   showNotification: boolean;
 }
@@ -31,7 +28,7 @@ const WordChainsGame: React.FC = () => {
     attempts: [],
     message: '',
     gameOver: false,
-    solution: [], // This is correct
+    solution: [],
     notificationMessage: '',
     showNotification: false,
   });
@@ -63,7 +60,7 @@ const WordChainsGame: React.FC = () => {
       attempts: [],
       message: '',
       gameOver: false,
-      solution: solution || [], // This is correct
+      solution: solution || [],
       notificationMessage: '',
       showNotification: false,
     };
@@ -73,12 +70,6 @@ const WordChainsGame: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState((prev) => ({ ...prev, inputWord: e.target.value.toLowerCase() }));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
-    }
   };
 
   const handleSubmit = () => {
@@ -143,48 +134,34 @@ const WordChainsGame: React.FC = () => {
     setState(getInitialState());
   };
 
-  const renderKeyboard = () => {
-    const rows = [
-      ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-      ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-      ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫'],
-    ];
+  const handleKeyPress = (key: string) => {
+    if (state.gameOver) return;
 
-    return (
-      <div className="mt-4">
-        {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center mb-2">
-            {row.map((key) => (
-              <button
-                key={key}
-                className="mx-1 p-2 bg-gray-200 rounded text-sm font-bold"
-                onClick={() => {
-                  if (key === '⌫') {
-                    setState((prev) => ({
-                      ...prev,
-                      inputWord: prev.inputWord.slice(0, -1),
-                    }));
-                  } else if (key === 'ENTER') {
-                    handleSubmit();
-                  } else {
-                    setState((prev) => ({
-                      ...prev,
-                      inputWord: prev.inputWord + key.toLowerCase(),
-                    }));
-                  }
-                }}
-              >
-                {key}
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
-    );
+    setState((prev) => ({
+      ...prev,
+      inputWord:
+        prev.inputWord.length < 3
+          ? prev.inputWord + key.toLowerCase()
+          : prev.inputWord,
+    }));
+  };
+
+  const handleBackspace = () => {
+    if (state.gameOver) return;
+
+    setState((prev) => ({
+      ...prev,
+      inputWord: prev.inputWord.slice(0, -1),
+    }));
+  };
+
+  const handleEnter = () => {
+    if (state.gameOver) return;
+    handleSubmit();
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-screen bg-white">
       <header className="w-full bg-white shadow-sm flex items-center px-2 sm:px-4 py-2 sm:py-3 sticky top-0 z-10">
         <button
           className="text-gray-600 font-bold text-lg sm:text-xl p-2"
@@ -201,100 +178,107 @@ const WordChainsGame: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-grow font-sans w-full max-w-md mx-auto p-2 sm:p-5">
-        {showInstructions && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-4 rounded-lg max-w-sm">
-              <h2 className="text-xl font-bold mb-2">How to Play</h2>
-              <p>
-                Change one letter at a time to transform the start word into the
-                end word.
-              </p>
-              <p className="mt-2">
-                You have 10 attempts to reach the target word.
-              </p>
-              <button
-                className="mt-4 p-2 bg-blue-500 text-white rounded"
-                onClick={() => setShowInstructions(false)}
-              >
-                Got it!
-              </button>
-            </div>
-          </div>
-        )}
-
-        <div className="mb-6 text-center">
-          <div className="flex justify-center items-center space-x-4">
-            <div
-              key={
-                state.attempts.length > 0
-                  ? state.attempts[state.attempts.length - 1]
-                  : state.startWord
-              }
-              className="text-2xl font-bold p-3 bg-blue-100 rounded-lg spin-animation"
-            >
-              {state.attempts.length > 0
-                ? state.attempts[state.attempts.length - 1]
-                : state.startWord}
-            </div>
-            <div className="text-xl">➔</div>
-            <div className="text-2xl font-bold p-3 bg-green-100 rounded-lg">
-              {state.endWord}
-            </div>
-          </div>
-          <p className="mt-4 text-lg">
-            Starting Word: <strong>{state.startWord}</strong>
-          </p>
-        </div>
-
-        <div className="grid grid-cols-5 gap-2 mb-4">
-          {Array(10)
-            .fill(null)
-            .map((_, index) => (
-              <div
-                key={index}
-                className={`border p-2 text-center h-10 flex items-center justify-center ${
-                  index < state.attempts.length ? 'bg-gray-100' : ''
-                }`}
-              >
-                {state.attempts[index] || ''}
+      <main className="flex-grow overflow-y-auto">
+        <div className="font-sans w-full max-w-md mx-auto p-2 sm:p-5 flex flex-col justify-start">
+          {showInstructions && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white p-4 rounded-lg max-w-sm">
+                <h2 className="text-xl font-bold mb-2">How to Play</h2>
+                <p>
+                  Change one letter at a time to transform the start word into
+                  the end word.
+                </p>
+                <p className="mt-2">
+                  You have 10 attempts to reach the target word.
+                </p>
+                <button
+                  className="mt-4 p-2 bg-blue-500 text-white rounded"
+                  onClick={() => setShowInstructions(false)}
+                >
+                  Got it!
+                </button>
               </div>
-            ))}
-        </div>
+            </div>
+          )}
 
-        {!state.gameOver && (
-          <div className="mb-4">
-            <input
-              type="text"
-              value={state.inputWord}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-              placeholder="Enter word"
-              className="w-full p-2 border rounded"
-              maxLength={state.startWord.length}
-            />
+          <div className="mb-6 text-center">
+            <div className="flex justify-center items-center space-x-4">
+              <div
+                key={
+                  state.attempts.length > 0
+                    ? state.attempts[state.attempts.length - 1]
+                    : state.startWord
+                }
+                className="text-2xl font-bold p-3 bg-blue-100 rounded-lg spin-animation"
+              >
+                {state.attempts.length > 0
+                  ? state.attempts[state.attempts.length - 1]
+                  : state.startWord}
+              </div>
+              <div className="text-xl">➔</div>
+              <div className="text-2xl font-bold p-3 bg-green-100 rounded-lg">
+                {state.endWord}
+              </div>
+            </div>
+            <p className="mt-4 text-lg">
+              Starting Word: <strong>{state.startWord}</strong>
+            </p>
           </div>
-        )}
 
-        {state.gameOver && (
-          <button
-            onClick={startNewGame}
-            className="w-full p-2 bg-green-500 text-white rounded"
-          >
-            Start New Game
-          </button>
-        )}
+          <div className="grid grid-cols-5 gap-2 mb-4">
+            {Array(10)
+              .fill(null)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className={`border p-2 text-center h-10 flex items-center justify-center ${
+                    index < state.attempts.length ? 'bg-gray-100' : ''
+                  }`}
+                >
+                  {state.attempts[index] || ''}
+                </div>
+              ))}
+          </div>
 
-        {renderKeyboard()}
-
-        <Notification
-          message={state.notificationMessage}
-          isVisible={state.showNotification}
-          onHide={() =>
-            setState((prev) => ({ ...prev, showNotification: false }))
-          }
-        />
+          {!state.gameOver && (
+            <div className="mb-4">
+              <input
+                type="text"
+                value={state.inputWord}
+                onChange={(e) =>
+                  setState((prev) => ({
+                    ...prev,
+                    inputWord: e.target.value.toLowerCase(),
+                  }))
+                }
+                placeholder="Enter word"
+                className="w-full p-2 border rounded"
+                maxLength={state.startWord.length}
+                readOnly
+              />
+            </div>
+          )}
+        </div>
       </main>
+
+      {!state.gameOver && (
+        <div className="w-full">
+          <Keyboard
+            onKeyPress={handleKeyPress}
+            onEnter={handleEnter}
+            onBackspace={handleBackspace}
+            disabledKeys={new Set()} // Implement logic for disabled keys if needed
+          />
+        </div>
+      )}
+
+      <Notification
+        message={state.notificationMessage}
+        isVisible={state.showNotification}
+        onHide={() =>
+          setState((prev) => ({ ...prev, showNotification: false }))
+        }
+      />
     </div>
   );
 };
