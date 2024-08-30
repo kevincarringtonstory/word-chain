@@ -89,9 +89,17 @@ body {
 html,
 body {
   height: 100%;
+  height: -webkit-fill-available;
   overflow: hidden;
 }
 
 #__next {
   height: 100%;
+  height: -webkit-fill-available;
+}
+
+/* Add this new rule */
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
