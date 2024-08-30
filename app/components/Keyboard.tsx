@@ -40,7 +40,9 @@ const Keyboard: React.FC<KeyboardProps> = ({
   );
 
   return (
-    <div className="keyboard w-full max-w-lg mx-auto px-1 py-2 bg-white">
+    <div className="w-full pb-0">
+      {' '}
+      {/* Add pb-0 to remove any bottom padding */}
       {keys.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-center mb-2">
           {row.map((key) => (
