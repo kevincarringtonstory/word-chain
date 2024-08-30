@@ -89,13 +89,15 @@ body {
 html,
 body {
   height: 100%;
-  height: -webkit-fill-available;
-  overflow: hidden;
 }
 
 #__next {
   height: 100%;
-  height: -webkit-fill-available;
+}
+
+.h-screen {
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 /* Add this new rule */
