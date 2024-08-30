@@ -279,6 +279,15 @@ const WordChainsGame: React.FC = () => {
               />
             </div>
           )}
+
+          {state.gameOver && (
+            <button
+              onClick={startNewGame}
+              className="w-full p-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors"
+            >
+              Play Again
+            </button>
+          )}
         </div>
 
         {!state.gameOver && (
