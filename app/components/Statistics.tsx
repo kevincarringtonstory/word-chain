@@ -1,36 +1,62 @@
 import React, { useState, useEffect } from 'react';
 
 interface StatisticsProps {
-  gamesPlayed3: number;
-  winPercentage3: number;
-  currentStreak3: number;
-  maxStreak3: number;
-  losses3: number;
-  gamesPlayed4: number;
-  winPercentage4: number;
-  currentStreak4: number;
-  maxStreak4: number;
-  losses4: number;
   onClose: () => void;
   isVisible: boolean;
 }
 
-const Statistics: React.FC<StatisticsProps> = ({
-  gamesPlayed3,
-  winPercentage3,
-  currentStreak3,
-  maxStreak3,
-  losses3,
-  gamesPlayed4,
-  winPercentage4,
-  currentStreak4,
-  maxStreak4,
-  losses4,
-  onClose,
-  isVisible,
-}) => {
+export class Stats {
+  gamesPlayed: number = 0;
+  wins: number = 0;
+  losses: number = 0;
+  currentStreak: number = 0;
+  maxStreak: number = 0;
+
+  constructor(data?: string) {
+    if (data && data !== 'default') {
+      const parsedData = JSON.parse(data) as Partial<Stats>;
+      Object.assign(this, parsedData);
+    }
+  }
+
+  addWin() {
+    this.gamesPlayed++;
+    this.wins++;
+    this.currentStreak++;
+    this.maxStreak = Math.max(this.currentStreak, this.maxStreak);
+  }
+
+  addLoss() {
+    this.gamesPlayed++;
+    this.losses++;
+    this.currentStreak = 0;
+  }
+
+  toString() {
+    return JSON.stringify(this);
+  }
+
+  getWinPercentage() {
+    return this.gamesPlayed > 0 ? (this.wins / this.gamesPlayed) * 100 : 0;
+  }
+}
+
+const Statistics: React.FC<StatisticsProps> = ({ onClose, isVisible }) => {
   const [animate, setAnimate] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [stats3, setStats3] = useState(new Stats());
+  const [stats4, setStats4] = useState(new Stats());
+
+  useEffect(() => {
+    const loadStats = () => {
+      const stats3Data = localStorage.getItem('game-stats-3') || 'default';
+      const stats4Data = localStorage.getItem('game-stats-4') || 'default';
+      setStats3(new Stats(stats3Data));
+      setStats4(new Stats(stats4Data));
+    };
+
+    loadStats();
+  }, []);
 
   const handleClose = () => {
     setIsClosing(true);
@@ -52,7 +78,7 @@ const Statistics: React.FC<StatisticsProps> = ({
   if (!isVisible && !isClosing) return null;
 
   const formatValue = (value: number): string => {
-    return isNaN(value) || value === Infinity ? '0' : value.toString();
+    return isNaN(value) || value === Infinity ? '0' : value.toFixed(0);
   };
 
   return (
@@ -76,27 +102,39 @@ const Statistics: React.FC<StatisticsProps> = ({
         <div className="mb-6">
           <h3 className="text-xl font-semibold mb-2">3-Letter Words</h3>
           <div className="grid grid-cols-5 gap-4">
-            <StatItem label="Played" value={formatValue(gamesPlayed3)} />
-            <StatItem label="Win %" value={formatValue(winPercentage3)} />
+            <StatItem label="Played" value={formatValue(stats3.gamesPlayed)} />
+            <StatItem
+              label="Win %"
+              value={formatValue(stats3.getWinPercentage())}
+            />
             <StatItem
               label="Current Streak"
-              value={formatValue(currentStreak3)}
+              value={formatValue(stats3.currentStreak)}
             />
-            <StatItem label="Max Streak" value={formatValue(maxStreak3)} />
-            <StatItem label="Losses" value={formatValue(losses3)} />
+            <StatItem
+              label="Max Streak"
+              value={formatValue(stats3.maxStreak)}
+            />
+            <StatItem label="Losses" value={formatValue(stats3.losses)} />
           </div>
         </div>
         <div>
           <h3 className="text-xl font-semibold mb-2">4-Letter Words</h3>
           <div className="grid grid-cols-5 gap-4">
-            <StatItem label="Played" value={formatValue(gamesPlayed4)} />
-            <StatItem label="Win %" value={formatValue(winPercentage4)} />
+            <StatItem label="Played" value={formatValue(stats4.gamesPlayed)} />
+            <StatItem
+              label="Win %"
+              value={formatValue(stats4.getWinPercentage())}
+            />
             <StatItem
               label="Current Streak"
-              value={formatValue(currentStreak4)}
+              value={formatValue(stats4.currentStreak)}
             />
-            <StatItem label="Max Streak" value={formatValue(maxStreak4)} />
-            <StatItem label="Losses" value={formatValue(losses4)} />
+            <StatItem
+              label="Max Streak"
+              value={formatValue(stats4.maxStreak)}
+            />
+            <StatItem label="Losses" value={formatValue(stats4.losses)} />
           </div>
         </div>
       </div>

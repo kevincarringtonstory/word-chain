@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { dictionary, fourLetterWords } from '@/app/utils/dictionary';
 import { findWordChain } from '@/app/utils/wordChainSolver';
+import { Stats } from '@/app/components/Statistics';
 import Notification from './Notification';
 import Keyboard from './Keyboard';
 import Settings from './Settings';
@@ -36,38 +37,26 @@ const WordChainsGame: React.FC = () => {
     showNotification: false,
   });
 
-  const [showInstructions, setShowInstructions] = useState(true); // Changed to true
+  const [showInstructions, setShowInstructions] = useState(true);
   const [wordLength, setWordLength] = useState(3);
   const [showSettings, setShowSettings] = useState(false);
   const [showStatistics, setShowStatistics] = useState(false);
 
-  const [gamesPlayed3, setGamesPlayed3] = useState(0);
-  const [wins3, setWins3] = useState(0);
-  const [losses3, setLosses3] = useState(0);
-  const [currentStreak3, setCurrentStreak3] = useState(0);
-  const [maxStreak3, setMaxStreak3] = useState(0);
-
-  const [gamesPlayed4, setGamesPlayed4] = useState(0);
-  const [wins4, setWins4] = useState(0);
-  const [losses4, setLosses4] = useState(0);
-  const [currentStreak4, setCurrentStreak4] = useState(0);
-  const [maxStreak4, setMaxStreak4] = useState(0);
+  const [stats3, setStats3] = useState(new Stats());
+  const [stats4, setStats4] = useState(new Stats());
 
   const [isExpanding, setIsExpanding] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Calculate win percentages
-  const winPercentage3 = useMemo(() => {
-    return gamesPlayed3 > 0 ? Math.round((wins3 / gamesPlayed3) * 100) : 0;
-  }, [wins3, gamesPlayed3]);
-
-  const winPercentage4 = useMemo(() => {
-    return gamesPlayed4 > 0 ? Math.round((wins4 / gamesPlayed4) * 100) : 0;
-  }, [wins4, gamesPlayed4]);
-
   useEffect(() => {
     const initialState = getInitialState();
     setState(initialState);
+
+    // Load stats from local storage
+    const stats3Data = localStorage.getItem('game-stats-3') || 'default';
+    const stats4Data = localStorage.getItem('game-stats-4') || 'default';
+    setStats3(new Stats(stats3Data));
+    setStats4(new Stats(stats4Data));
 
     // Add event listener for physical keyboard
     window.addEventListener('keydown', handleKeyDown);
@@ -79,61 +68,10 @@ const WordChainsGame: React.FC = () => {
   }, [wordLength]);
 
   useEffect(() => {
-    const savedStats = localStorage.getItem('wordChainStats');
-    if (savedStats) {
-      const {
-        gamesPlayed3,
-        wins3,
-        currentStreak3,
-        maxStreak3,
-        losses3,
-        gamesPlayed4,
-        wins4,
-        currentStreak4,
-        maxStreak4,
-        losses4,
-      } = JSON.parse(savedStats);
-      setGamesPlayed3(gamesPlayed3);
-      setWins3(wins3);
-      setCurrentStreak3(currentStreak3);
-      setMaxStreak3(maxStreak3);
-      setLosses3(losses3);
-      setGamesPlayed4(gamesPlayed4);
-      setWins4(wins4);
-      setCurrentStreak4(currentStreak4);
-      setMaxStreak4(maxStreak4);
-      setLosses4(losses4);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(
-      'wordChainStats',
-      JSON.stringify({
-        gamesPlayed3,
-        wins3,
-        currentStreak3,
-        maxStreak3,
-        losses3,
-        gamesPlayed4,
-        wins4,
-        currentStreak4,
-        maxStreak4,
-        losses4,
-      })
-    );
-  }, [
-    gamesPlayed3,
-    wins3,
-    currentStreak3,
-    maxStreak3,
-    losses3,
-    gamesPlayed4,
-    wins4,
-    currentStreak4,
-    maxStreak4,
-    losses4,
-  ]);
+    // Save stats to local storage whenever they change
+    localStorage.setItem('game-stats-3', stats3.toString());
+    localStorage.setItem('game-stats-4', stats4.toString());
+  }, [stats3, stats4]);
 
   const getInitialState = (): GameState => {
     const validWords = wordLength === 3 ? dictionary : fourLetterWords;
@@ -209,37 +147,16 @@ const WordChainsGame: React.FC = () => {
   };
 
   const handleGameEnd = (isWin: boolean) => {
-    const statsSetters =
-      wordLength === 3
-        ? {
-            setGamesPlayed: setGamesPlayed3,
-            setWins: setWins3,
-            setLosses: setLosses3,
-            setCurrentStreak: setCurrentStreak3,
-            setMaxStreak: setMaxStreak3,
-          }
-        : {
-            setGamesPlayed: setGamesPlayed4,
-            setWins: setWins4,
-            setLosses: setLosses4,
-            setCurrentStreak: setCurrentStreak4,
-            setMaxStreak: setMaxStreak4,
-          };
+    const currentStats = wordLength === 3 ? stats3 : stats4;
+    const setStats = wordLength === 3 ? setStats3 : setStats4;
 
-    statsSetters.setGamesPlayed((prev) => prev + 1);
     if (isWin) {
-      statsSetters.setWins((prev) => prev + 1);
-      statsSetters.setCurrentStreak((prev) => {
-        const newStreak = prev + 1;
-        statsSetters.setMaxStreak((maxStreak) =>
-          Math.max(maxStreak, newStreak)
-        );
-        return newStreak;
-      });
+      currentStats.addWin();
     } else {
-      statsSetters.setLosses((prev) => prev + 1);
-      statsSetters.setCurrentStreak(0);
+      currentStats.addLoss();
     }
+
+    setStats(new Stats(currentStats.toString()));
   };
 
   const showNotification = (message: string) => {
@@ -311,16 +228,8 @@ const WordChainsGame: React.FC = () => {
   };
 
   const statistics = {
-    gamesPlayed3,
-    winPercentage3,
-    currentStreak3,
-    maxStreak3,
-    losses3,
-    gamesPlayed4,
-    winPercentage4,
-    currentStreak4,
-    maxStreak4,
-    losses4,
+    stats3,
+    stats4,
   };
 
   return (
