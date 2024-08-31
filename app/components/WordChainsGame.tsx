@@ -228,13 +228,13 @@ const WordChainsGame: React.FC = () => {
     statsSetters.setGamesPlayed((prev) => prev + 1);
     if (isWin) {
       statsSetters.setWins((prev) => prev + 1);
-      statsSetters.setCurrentStreak((prev) => prev + 1);
-      statsSetters.setMaxStreak((prev) =>
-        Math.max(
-          prev,
-          statsSetters.setCurrentStreak((current) => current + 1)
-        )
-      );
+      statsSetters.setCurrentStreak((prev) => {
+        const newStreak = prev + 1;
+        statsSetters.setMaxStreak((maxStreak) =>
+          Math.max(maxStreak, newStreak)
+        );
+        return newStreak;
+      });
     } else {
       statsSetters.setLosses((prev) => prev + 1);
       statsSetters.setCurrentStreak(0);
