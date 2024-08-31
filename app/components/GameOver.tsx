@@ -14,15 +14,15 @@ const GameOver: React.FC<GameOverProps> = ({
   endWord,
 }) => {
   return (
-    <div className="text-center">
-      <p className="text-xl mb-4">
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-10">
+      <p className="text-xl mb-4 px-4 text-center">
         {isWin
           ? `Congratulations! You've reached the target word in ${attempts} moves!`
           : `Sorry, you've used all 10 attempts. The target word was '${endWord}'.`}
       </p>
       <button
         onClick={onPlayAgain}
-        className="w-full p-2 sm:p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors"
+        className="w-64 p-2 sm:p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors"
       >
         Play Again
       </button>

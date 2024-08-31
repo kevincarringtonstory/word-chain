@@ -233,8 +233,8 @@ const WordChainsGame: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
-      <div className="flex-1 flex flex-col w-full max-w-lg mx-auto p-2 sm:p-4">
+    <div className="flex flex-col h-screen bg-white overflow-hidden">
+      <div className="flex-1 flex flex-col w-full max-w-lg mx-auto p-2 sm:p-4 relative">
         <header className="w-full max-w-[500px] mx-auto bg-white shadow-sm flex items-center justify-between mb-2 sm:mb-4 relative">
           <button
             className="text-gray-600 font-bold text-lg sm:text-xl p-2 absolute left-0"
@@ -288,7 +288,7 @@ const WordChainsGame: React.FC = () => {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col justify-between mt-2 sm:mt-4">
+        <main className="flex-1 flex flex-col justify-between mt-2 sm:mt-4 overflow-hidden">
           {showInstructions && (
             <GameInstructions
               isVisible={showInstructions}
@@ -296,8 +296,7 @@ const WordChainsGame: React.FC = () => {
             />
           )}
 
-          {/* New div for the main play area with increased top padding */}
-          <div className="flex-1 flex flex-col justify-center pt-8 sm:pt-12 md:pt-16">
+          <div className="flex-1 flex flex-col justify-center pt-4 sm:pt-6 md:pt-8 overflow-hidden">
             <div className="mb-2 sm:mb-4 text-center">
               <div className="flex justify-center items-center space-x-4 mb-2">
                 <div
@@ -322,8 +321,8 @@ const WordChainsGame: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex-grow flex flex-col justify-center">
-              <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4">
+            <div className="flex-grow flex flex-col justify-center overflow-hidden">
+              <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4 overflow-y-auto max-h-[40vh]">
                 {Array(10)
                   .fill(null)
                   .map((_, index) => (
