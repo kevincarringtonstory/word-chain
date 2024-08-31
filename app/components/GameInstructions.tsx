@@ -10,17 +10,32 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({
   onClose,
 }) => {
   const [animate, setAnimate] = useState(false);
+  const [spinWords, setSpinWords] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setAnimate(false);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 300); // Match this with your animation duration
+  };
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && !isClosing) {
       // Delay the animation slightly to ensure the component is rendered
       setTimeout(() => setAnimate(true), 50);
+      // Trigger word spin animation
+      setSpinWords(true);
+      // Reset spin animation after a delay
+      setTimeout(() => setSpinWords(false), 1000);
     } else {
       setAnimate(false);
     }
-  }, [isVisible]);
+  }, [isVisible, isClosing]);
 
-  if (!isVisible) return null;
+  if (!isVisible && !isClosing) return null;
 
   return (
     <div
@@ -42,7 +57,7 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({
         <div className="sticky top-0 bg-white z-10 p-4 border-b">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl sm:text-3xl font-bold">How to Play</h2>
-            <button onClick={onClose} className="text-2xl sm:text-3xl">
+            <button onClick={handleClose} className="text-2xl sm:text-3xl">
               &times;
             </button>
           </div>
@@ -61,15 +76,27 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({
           <div>
             <h3 className="text-lg sm:text-xl font-semibold mb-2">Example:</h3>
             <div className="flex flex-nowrap justify-center items-center gap-1 sm:gap-2 mb-2 sm:mb-4">
-              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm spin-animation">
+              <div
+                className={`text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm ${
+                  spinWords ? 'spin-animation' : ''
+                }`}
+              >
                 CAT
               </div>
               <div className="text-sm sm:text-base">→</div>
-              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm spin-animation">
+              <div
+                className={`text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm ${
+                  spinWords ? 'spin-animation' : ''
+                }`}
+              >
                 COT
               </div>
               <div className="text-sm sm:text-base">→</div>
-              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm spin-animation">
+              <div
+                className={`text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm ${
+                  spinWords ? 'spin-animation' : ''
+                }`}
+              >
                 DOT
               </div>
               <div className="text-sm sm:text-base">→</div>

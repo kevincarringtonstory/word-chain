@@ -36,7 +36,7 @@ const WordChainsGame: React.FC = () => {
     showNotification: false,
   });
 
-  const [showInstructions, setShowInstructions] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true); // Changed to true
   const [wordLength, setWordLength] = useState(3);
   const [showSettings, setShowSettings] = useState(false);
   const [showStatistics, setShowStatistics] = useState(false);
