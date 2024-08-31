@@ -55,14 +55,12 @@ const WordChainsGame: React.FC = () => {
 
   // Calculate win percentages
   const winPercentage3 = useMemo(() => {
-    if (wins3 + losses3 === 0) return 0;
-    return Math.round((wins3 / (wins3 + losses3)) * 100);
-  }, [wins3, losses3]);
+    return gamesPlayed3 > 0 ? Math.round((wins3 / gamesPlayed3) * 100) : 0;
+  }, [wins3, gamesPlayed3]);
 
   const winPercentage4 = useMemo(() => {
-    if (wins4 + losses4 === 0) return 0;
-    return Math.round((wins4 / (wins4 + losses4)) * 100);
-  }, [wins4, losses4]);
+    return gamesPlayed4 > 0 ? Math.round((wins4 / gamesPlayed4) * 100) : 0;
+  }, [wins4, gamesPlayed4]);
 
   useEffect(() => {
     const initialState = getInitialState();
