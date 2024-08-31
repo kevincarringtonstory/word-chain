@@ -52,6 +52,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
                 ${disabledKeys.has(key) ? 'opacity-50 cursor-not-allowed' : ''}
                 bg-gray-200 text-gray-800
                 active:bg-gray-400 transition-colors duration-100
+                touch-none
                 flex items-center justify-center uppercase
               `}
               onClick={() => handleKeyClick(key)}

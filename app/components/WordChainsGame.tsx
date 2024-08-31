@@ -235,7 +235,7 @@ const WordChainsGame: React.FC = () => {
   return (
     <div className="flex flex-col h-screen bg-white">
       <div className="flex-1 flex flex-col w-full max-w-lg mx-auto p-2 sm:p-4">
-        <header className="w-full bg-white shadow-sm flex items-center justify-between mb-2 sm:mb-4 relative">
+        <header className="w-full max-w-[500px] mx-auto bg-white shadow-sm flex items-center justify-between mb-2 sm:mb-4 relative">
           <button
             className="text-gray-600 font-bold text-lg sm:text-xl p-2 absolute left-0"
             onClick={() => setShowInstructions(true)}
@@ -296,48 +296,34 @@ const WordChainsGame: React.FC = () => {
             />
           )}
 
-          <div className="mb-2 sm:mb-4 text-center">
-            <div className="flex justify-center items-center space-x-4 mb-2">
-              <div
-                key={
-                  state.attempts.length > 0
+          {/* New div for the main play area with increased top padding */}
+          <div className="flex-1 flex flex-col justify-center pt-8 sm:pt-12 md:pt-16">
+            <div className="mb-2 sm:mb-4 text-center">
+              <div className="flex justify-center items-center space-x-4 mb-2">
+                <div
+                  key={
+                    state.attempts.length > 0
+                      ? state.attempts[state.attempts.length - 1]
+                      : state.startWord
+                  }
+                  className="text-4xl font-bold p-4 bg-blue-100 rounded-lg shadow-md spin-animation max-[350px]:text-3xl max-[350px]:p-2"
+                >
+                  {state.attempts.length > 0
                     ? state.attempts[state.attempts.length - 1]
-                    : state.startWord
-                }
-                className="text-3xl sm:text-4xl font-bold p-2 sm:p-4 bg-blue-100 rounded-lg shadow-md spin-animation"
-              >
-                {state.attempts.length > 0
-                  ? state.attempts[state.attempts.length - 1]
-                  : state.startWord}
+                    : state.startWord}
+                </div>
+                <div className="text-3xl font-bold max-[350px]:text-2xl">➔</div>
+                <div className="text-4xl font-bold p-4 bg-green-100 rounded-lg shadow-md max-[350px]:text-3xl max-[350px]:p-2">
+                  {state.endWord}
+                </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-bold">➔</div>
-              <div className="text-3xl sm:text-4xl font-bold p-2 sm:p-4 bg-green-100 rounded-lg shadow-md">
-                {state.endWord}
-              </div>
-            </div>
-            <p className="mt-2 text-lg sm:text-xl">
-              Starting Word: <strong>{state.startWord}</strong>
-            </p>
-          </div>
-
-          <div className="flex-grow flex flex-col justify-center">
-            <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4">
-              {Array(10)
-                .fill(null)
-                .map((_, index) => (
-                  <div
-                    key={index}
-                    className={`border p-1 sm:p-2 text-center h-8 sm:h-10 flex items-center justify-center text-sm sm:text-base ${
-                      index < state.attempts.length ? 'bg-gray-100' : ''
-                    }`}
-                  >
-                    {state.attempts[index] || ''}
-                  </div>
-                ))}
+              <p className="mt-2 text-lg sm:text-xl">
+                Starting Word: <strong>{state.startWord}</strong>
+              </p>
             </div>
 
             {!state.gameOver && (
-              <div className="mb-2 sm:mb-4">
+              <div className="mb-4 sm:mb-6">
                 <input
                   ref={inputRef}
                   type="text"
@@ -352,14 +338,31 @@ const WordChainsGame: React.FC = () => {
               </div>
             )}
 
-            {state.gameOver && (
-              <button
-                onClick={startNewGame}
-                className="w-full p-2 sm:p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors"
-              >
-                Play Again
-              </button>
-            )}
+            <div className="flex-grow flex flex-col justify-center">
+              <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4">
+                {Array(10)
+                  .fill(null)
+                  .map((_, index) => (
+                    <div
+                      key={index}
+                      className={`border p-1 sm:p-2 text-center h-8 sm:h-10 flex items-center justify-center text-sm sm:text-base ${
+                        index < state.attempts.length ? 'bg-gray-100' : ''
+                      }`}
+                    >
+                      {state.attempts[index] || ''}
+                    </div>
+                  ))}
+              </div>
+
+              {state.gameOver && (
+                <button
+                  onClick={startNewGame}
+                  className="w-full p-2 sm:p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors"
+                >
+                  Play Again
+                </button>
+              )}
+            </div>
           </div>
         </main>
 
