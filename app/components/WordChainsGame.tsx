@@ -230,7 +230,10 @@ const WordChainsGame: React.FC = () => {
       statsSetters.setWins((prev) => prev + 1);
       statsSetters.setCurrentStreak((prev) => prev + 1);
       statsSetters.setMaxStreak((prev) =>
-        Math.max(prev, statsSetters.setCurrentStreak() + 1)
+        Math.max(
+          prev,
+          statsSetters.setCurrentStreak((current) => current + 1)
+        )
       );
     } else {
       statsSetters.setLosses((prev) => prev + 1);
