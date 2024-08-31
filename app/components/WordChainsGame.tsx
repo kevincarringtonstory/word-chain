@@ -419,7 +419,7 @@ const WordChainsGame: React.FC = () => {
           </div>
 
           {!state.gameOver && (
-            <div className="mb-2">
+            <div className="mb-4">
               <input
                 type="text"
                 value={state.inputWord}
@@ -429,8 +429,8 @@ const WordChainsGame: React.FC = () => {
                     inputWord: e.target.value.toLowerCase(),
                   }))
                 }
-                placeholder="Enter word"
-                className="w-full p-2 border rounded"
+                placeholder="Type here"
+                className="w-full py-6 px-4 border-2 border-blue-300 rounded-lg text-3xl text-center font-bold tracking-wider focus:outline-none focus:border-blue-500 transition-colors leading-normal"
                 maxLength={wordLength}
                 readOnly
               />
