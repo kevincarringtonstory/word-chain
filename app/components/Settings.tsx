@@ -25,6 +25,15 @@ const Settings: React.FC<SettingsProps> = ({
     }, 300);
   };
 
+  const handleWordLengthChange = (length: number) => {
+    setIsClosing(true);
+    setAnimate(false);
+    setTimeout(() => {
+      setIsClosing(false);
+      onWordLengthChange(length);
+    }, 300);
+  };
+
   useEffect(() => {
     if (isVisible && !isClosing) {
       setTimeout(() => setAnimate(true), 50);
@@ -42,33 +51,33 @@ const Settings: React.FC<SettingsProps> = ({
       }`}
     >
       <div
-        className={`bg-white p-6 rounded-lg max-w-sm w-full transition-all duration-300 ease-out ${
+        className={`bg-white p-8 rounded-xl max-w-md w-full shadow-2xl transition-all duration-300 ease-out ${
           animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        <h2 className="text-2xl font-bold mb-4">Settings</h2>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">Settings</h2>
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700 mb-3">
             Word Length
           </label>
-          <div className="flex space-x-2">
+          <div className="flex space-x-4">
             {[3, 4].map((length) => (
               <button
                 key={length}
-                className={`px-4 py-2 rounded ${
+                className={`text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 rounded-md shadow-sm ${
                   wordLength === length
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-800'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-blue-100 text-gray-800 hover:bg-blue-200'
                 }`}
-                onClick={() => onWordLengthChange(length)}
+                onClick={() => handleWordLengthChange(length)}
               >
-                {length}
+                {length} Letters
               </button>
             ))}
           </div>
         </div>
         <button
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm hover:bg-blue-200 transition-colors duration-200"
           onClick={handleClose}
         >
           Close
