@@ -429,7 +429,6 @@ const WordChainsGame: React.FC = () => {
                     inputWord: e.target.value.toLowerCase(),
                   }))
                 }
-                placeholder="Type here"
                 className="w-full py-6 px-4 border-2 border-blue-300 rounded-lg text-3xl text-center font-bold tracking-wider focus:outline-none focus:border-blue-500 transition-colors leading-normal"
                 maxLength={wordLength}
                 readOnly
