@@ -9,6 +9,7 @@ import Keyboard from './Keyboard';
 import Settings from './Settings';
 import Statistics from './Statistics';
 import GameInstructions from './GameInstructions';
+import GameOver from './GameOver';
 
 interface GameState {
   startWord: string;
@@ -138,11 +139,10 @@ const WordChainsGame: React.FC = () => {
 
     if (gameOver) {
       handleGameEnd(inputWord === endWord);
-      showNotification(
-        inputWord === endWord
-          ? `Congratulations! You've reached the target word in ${newAttempts.length} moves!`
-          : `Sorry, you've used all 10 attempts. The target word was '${endWord}'.`
-      );
+      setState((prev) => ({
+        ...prev,
+        gameOver: true,
+      }));
     }
   };
 
@@ -322,22 +322,6 @@ const WordChainsGame: React.FC = () => {
               </p>
             </div>
 
-            {!state.gameOver && (
-              <div className="mb-4 sm:mb-6">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={state.inputWord}
-                  onChange={handleInputChange}
-                  className={`w-full py-3 sm:py-4 px-2 sm:px-4 border-2 border-blue-300 rounded-lg text-xl sm:text-2xl text-center font-bold tracking-wider focus:outline-none focus:border-blue-500 transition-all duration-100 ${
-                    isExpanding ? 'scale-105' : 'scale-100'
-                  }`}
-                  maxLength={wordLength}
-                  readOnly
-                />
-              </div>
-            )}
-
             <div className="flex-grow flex flex-col justify-center">
               <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4">
                 {Array(10)
@@ -354,13 +338,29 @@ const WordChainsGame: React.FC = () => {
                   ))}
               </div>
 
+              {!state.gameOver && (
+                <div className="mb-2 sm:mb-4">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={state.inputWord}
+                    onChange={handleInputChange}
+                    className={`w-full py-3 sm:py-4 px-2 sm:px-4 border-2 border-blue-300 rounded-lg text-xl sm:text-2xl text-center font-bold tracking-wider focus:outline-none focus:border-blue-500 transition-all duration-100 ${
+                      isExpanding ? 'scale-105' : 'scale-100'
+                    }`}
+                    maxLength={wordLength}
+                    readOnly
+                  />
+                </div>
+              )}
+
               {state.gameOver && (
-                <button
-                  onClick={startNewGame}
-                  className="w-full p-2 sm:p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors"
-                >
-                  Play Again
-                </button>
+                <GameOver
+                  onPlayAgain={startNewGame}
+                  isWin={state.currentWord === state.endWord}
+                  attempts={state.attempts.length}
+                  endWord={state.endWord}
+                />
               )}
             </div>
           </div>
