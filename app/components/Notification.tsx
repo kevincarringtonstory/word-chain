@@ -1,30 +1,29 @@
-import React, { JSX, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface NotificationProps {
   message: string;
   isVisible: boolean;
-  onHide: () => void;
+  isGameWon: boolean;
 }
 
 const Notification: React.FC<NotificationProps> = ({
   message,
   isVisible,
-  onHide,
+  isGameWon,
 }) => {
-  const [isShowing, setIsShowing] = useState(isVisible);
+  const [isShowing, setIsShowing] = useState(false);
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible || isGameWon) {
       setIsShowing(true);
-      const timer = setTimeout(() => {
-        setIsShowing(false);
-        setTimeout(onHide, 300); // Call onHide after fade-out animation
-      }, 1500); // Changed from 1000 to 1500 milliseconds
+      const timer = setTimeout(() => setIsShowing(false), 2000);
       return () => clearTimeout(timer);
     }
-  }, [isVisible, onHide]);
+  }, [isVisible, isGameWon]);
 
-  if (!isVisible) return null;
+  const displayMessage = isGameWon ? 'Great job!' : message;
+
+  if (!isShowing && !displayMessage) return null;
 
   return (
     <div
@@ -33,7 +32,7 @@ const Notification: React.FC<NotificationProps> = ({
       }`}
     >
       <div className="bg-gray-900 text-white px-4 py-2 rounded-md shadow-lg">
-        {message}
+        {displayMessage}
       </div>
     </div>
   );

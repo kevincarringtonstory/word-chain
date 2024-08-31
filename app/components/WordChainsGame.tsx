@@ -49,6 +49,9 @@ const WordChainsGame: React.FC = () => {
   const [isExpanding, setIsExpanding] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [gameCompletionMessage, setGameCompletionMessage] = useState('');
+  const [isGameWon, setIsGameWon] = useState(false);
+
   useEffect(() => {
     const initialState = getInitialState();
     setState(initialState);
@@ -152,11 +155,26 @@ const WordChainsGame: React.FC = () => {
 
     if (isWin) {
       currentStats.addWin();
+      setGameCompletionMessage(
+        `Congratulations! You've reached the target word in ${state.attempts.length} moves!`
+      );
+      setIsGameWon(true);
     } else {
       currentStats.addLoss();
+      setGameCompletionMessage(
+        `Sorry, you've used all 10 attempts. The target word was '${state.endWord}'.`
+      );
     }
 
     setStats(new Stats(currentStats.toString()));
+
+    // Show game completion notification
+    showNotification(gameCompletionMessage);
+
+    // Show statistics after a short delay
+    setTimeout(() => {
+      setShowStatistics(true);
+    }, 2000);
   };
 
   const showNotification = (message: string) => {
@@ -381,6 +399,7 @@ const WordChainsGame: React.FC = () => {
       <Notification
         message={state.notificationMessage}
         isVisible={state.showNotification}
+        isGameWon={isGameWon}
         onHide={() =>
           setState((prev) => ({ ...prev, showNotification: false }))
         }
