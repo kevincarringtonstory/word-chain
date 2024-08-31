@@ -110,3 +110,19 @@ body {
   min-height: 100vh; /* Fallback for browsers that do not support Custom Properties */
   min-height: calc(var(--vh, 1vh) * 100);
 }
+
+@media (min-width: 640px) {
+  /* Small devices */
+}
+
+@media (min-width: 768px) {
+  /* Medium devices */
+}
+
+@media (min-width: 1024px) {
+  /* Large devices */
+}
+
+@media (min-width: 1280px) {
+  /* Extra large devices */
+}

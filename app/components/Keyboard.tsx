@@ -40,20 +40,18 @@ const Keyboard: React.FC<KeyboardProps> = ({
   );
 
   return (
-    <div className="w-full pb-0">
-      {' '}
-      {/* Add pb-0 to remove any bottom padding */}
+    <div className="w-full max-w-md mx-auto">
       {keys.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex justify-center mb-2">
+        <div key={rowIndex} className="flex justify-center mb-1 sm:mb-2">
           {row.map((key) => (
             <button
               key={key}
               className={`
-                m-0.5 px-1 py-3 rounded text-sm font-bold
+                m-0.5 px-1 py-2 sm:py-3 rounded text-xs sm:text-sm font-bold
                 ${
                   key === 'ENTER' || key === 'BACKSPACE'
-                    ? 'w-16 sm:w-20 bg-gray-300 text-gray-800' // Adjusted width for ENTER and BACKSPACE
-                    : 'w-8 sm:w-10 bg-gray-200 text-gray-800'
+                    ? 'w-14 sm:w-16 bg-gray-300 text-gray-800'
+                    : 'w-7 sm:w-8 bg-gray-200 text-gray-800'
                 }
                 ${disabledKeys.has(key) ? 'opacity-50 cursor-not-allowed' : ''}
                 active:bg-gray-400 transition-colors duration-100
