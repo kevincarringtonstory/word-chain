@@ -4,6 +4,7 @@ interface SettingsProps {
   wordLength: number;
   onWordLengthChange: (length: number) => void;
   onClose: () => void;
+  isVisible: boolean;
 }
 
 const Settings: React.FC<SettingsProps> = ({
