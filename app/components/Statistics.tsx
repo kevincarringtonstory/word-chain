@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface StatisticsProps {
   gamesPlayed3: number;
@@ -29,14 +29,42 @@ const Statistics: React.FC<StatisticsProps> = ({
   onClose,
   isVisible,
 }) => {
-  if (!isVisible) return null;
+  const [animate, setAnimate] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setAnimate(false);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 300);
+  };
+
+  useEffect(() => {
+    if (isVisible && !isClosing) {
+      setTimeout(() => setAnimate(true), 50);
+    } else {
+      setAnimate(false);
+    }
+  }, [isVisible, isClosing]);
+
+  if (!isVisible && !isClosing) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg max-w-sm w-full">
+    <div
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-all duration-300 ease-out ${
+        animate ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
+      <div
+        className={`bg-white p-6 rounded-lg max-w-sm w-full transition-all duration-300 ease-out ${
+          animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">STATISTICS</h2>
-          <button onClick={onClose} className="text-2xl">
+          <button onClick={handleClose} className="text-2xl">
             &times;
           </button>
         </div>
