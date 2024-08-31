@@ -1,20 +1,36 @@
 import React from 'react';
 
 interface StatisticsProps {
-  gamesPlayed: number;
-  winPercentage: number;
-  currentStreak: number;
-  maxStreak: number;
+  gamesPlayed3: number;
+  winPercentage3: number;
+  currentStreak3: number;
+  maxStreak3: number;
+  losses3: number;
+  gamesPlayed4: number;
+  winPercentage4: number;
+  currentStreak4: number;
+  maxStreak4: number;
+  losses4: number;
   onClose: () => void;
+  isVisible: boolean;
 }
 
 const Statistics: React.FC<StatisticsProps> = ({
-  gamesPlayed,
-  winPercentage,
-  currentStreak,
-  maxStreak,
+  gamesPlayed3,
+  winPercentage3,
+  currentStreak3,
+  maxStreak3,
+  losses3,
+  gamesPlayed4,
+  winPercentage4,
+  currentStreak4,
+  maxStreak4,
+  losses4,
   onClose,
+  isVisible,
 }) => {
+  if (!isVisible) return null;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg max-w-sm w-full">
@@ -24,11 +40,25 @@ const Statistics: React.FC<StatisticsProps> = ({
             &times;
           </button>
         </div>
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <StatItem label="Played" value={gamesPlayed} />
-          <StatItem label="Win %" value={winPercentage} />
-          <StatItem label="Current Streak" value={currentStreak} />
-          <StatItem label="Max Streak" value={maxStreak} />
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold mb-2">3-Letter Words</h3>
+          <div className="grid grid-cols-5 gap-4">
+            <StatItem label="Played" value={gamesPlayed3} />
+            <StatItem label="Win %" value={winPercentage3} />
+            <StatItem label="Current Streak" value={currentStreak3} />
+            <StatItem label="Max Streak" value={maxStreak3} />
+            <StatItem label="Losses" value={losses3} />
+          </div>
+        </div>
+        <div>
+          <h3 className="text-xl font-semibold mb-2">4-Letter Words</h3>
+          <div className="grid grid-cols-5 gap-4">
+            <StatItem label="Played" value={gamesPlayed4} />
+            <StatItem label="Win %" value={winPercentage4} />
+            <StatItem label="Current Streak" value={currentStreak4} />
+            <StatItem label="Max Streak" value={maxStreak4} />
+            <StatItem label="Losses" value={losses4} />
+          </div>
         </div>
       </div>
     </div>

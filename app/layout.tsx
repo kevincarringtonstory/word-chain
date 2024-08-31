@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Word Chains Game',
-  description: 'Play the Word Chains Game',
+  title: 'Word Chain Game',
+  description: 'Play the Word Chain Game',
 };
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { dictionary, fourLetterWords } from '@/app/utils/dictionary';
 import { findWordChain } from '@/app/utils/wordChainSolver';
 import Notification from './Notification';
@@ -41,10 +41,28 @@ const WordChainsGame: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showStatistics, setShowStatistics] = useState(false);
 
-  const [gamesPlayed, setGamesPlayed] = useState(0);
-  const [wins, setWins] = useState(0);
-  const [currentStreak, setCurrentStreak] = useState(0);
-  const [maxStreak, setMaxStreak] = useState(0);
+  const [gamesPlayed3, setGamesPlayed3] = useState(0);
+  const [wins3, setWins3] = useState(0);
+  const [losses3, setLosses3] = useState(0);
+  const [currentStreak3, setCurrentStreak3] = useState(0);
+  const [maxStreak3, setMaxStreak3] = useState(0);
+
+  const [gamesPlayed4, setGamesPlayed4] = useState(0);
+  const [wins4, setWins4] = useState(0);
+  const [losses4, setLosses4] = useState(0);
+  const [currentStreak4, setCurrentStreak4] = useState(0);
+  const [maxStreak4, setMaxStreak4] = useState(0);
+
+  // Calculate win percentages
+  const winPercentage3 = useMemo(() => {
+    if (wins3 + losses3 === 0) return 0;
+    return Math.round((wins3 / (wins3 + losses3)) * 100);
+  }, [wins3, losses3]);
+
+  const winPercentage4 = useMemo(() => {
+    if (wins4 + losses4 === 0) return 0;
+    return Math.round((wins4 / (wins4 + losses4)) * 100);
+  }, [wins4, losses4]);
 
   useEffect(() => {
     const initialState = getInitialState();
@@ -62,12 +80,28 @@ const WordChainsGame: React.FC = () => {
   useEffect(() => {
     const savedStats = localStorage.getItem('wordChainStats');
     if (savedStats) {
-      const { gamesPlayed, wins, currentStreak, maxStreak } =
-        JSON.parse(savedStats);
-      setGamesPlayed(gamesPlayed);
-      setWins(wins);
-      setCurrentStreak(currentStreak);
-      setMaxStreak(maxStreak);
+      const {
+        gamesPlayed3,
+        wins3,
+        currentStreak3,
+        maxStreak3,
+        losses3,
+        gamesPlayed4,
+        wins4,
+        currentStreak4,
+        maxStreak4,
+        losses4,
+      } = JSON.parse(savedStats);
+      setGamesPlayed3(gamesPlayed3);
+      setWins3(wins3);
+      setCurrentStreak3(currentStreak3);
+      setMaxStreak3(maxStreak3);
+      setLosses3(losses3);
+      setGamesPlayed4(gamesPlayed4);
+      setWins4(wins4);
+      setCurrentStreak4(currentStreak4);
+      setMaxStreak4(maxStreak4);
+      setLosses4(losses4);
     }
   }, []);
 
@@ -75,13 +109,30 @@ const WordChainsGame: React.FC = () => {
     localStorage.setItem(
       'wordChainStats',
       JSON.stringify({
-        gamesPlayed,
-        wins,
-        currentStreak,
-        maxStreak,
+        gamesPlayed3,
+        wins3,
+        currentStreak3,
+        maxStreak3,
+        losses3,
+        gamesPlayed4,
+        wins4,
+        currentStreak4,
+        maxStreak4,
+        losses4,
       })
     );
-  }, [gamesPlayed, wins, currentStreak, maxStreak]);
+  }, [
+    gamesPlayed3,
+    wins3,
+    currentStreak3,
+    maxStreak3,
+    losses3,
+    gamesPlayed4,
+    wins4,
+    currentStreak4,
+    maxStreak4,
+    losses4,
+  ]);
 
   const getInitialState = (): GameState => {
     const validWords = wordLength === 3 ? dictionary : fourLetterWords;
@@ -147,20 +198,43 @@ const WordChainsGame: React.FC = () => {
     }));
 
     if (gameOver) {
-      setGamesPlayed((prev) => prev + 1);
-      if (inputWord === endWord) {
-        setWins((prev) => prev + 1);
-        setCurrentStreak((prev) => prev + 1);
-        setMaxStreak((prev) => Math.max(prev, currentStreak + 1));
-        showNotification(
-          `Congratulations! You've reached the target word in ${newAttempts.length} moves!`
-        );
-      } else {
-        setCurrentStreak(0);
-        showNotification(
-          `Sorry, you've used all 10 attempts. The target word was '${endWord}'.`
-        );
-      }
+      handleGameEnd(inputWord === endWord);
+      showNotification(
+        inputWord === endWord
+          ? `Congratulations! You've reached the target word in ${newAttempts.length} moves!`
+          : `Sorry, you've used all 10 attempts. The target word was '${endWord}'.`
+      );
+    }
+  };
+
+  const handleGameEnd = (isWin: boolean) => {
+    const statsSetters =
+      wordLength === 3
+        ? {
+            setGamesPlayed: setGamesPlayed3,
+            setWins: setWins3,
+            setLosses: setLosses3,
+            setCurrentStreak: setCurrentStreak3,
+            setMaxStreak: setMaxStreak3,
+          }
+        : {
+            setGamesPlayed: setGamesPlayed4,
+            setWins: setWins4,
+            setLosses: setLosses4,
+            setCurrentStreak: setCurrentStreak4,
+            setMaxStreak: setMaxStreak4,
+          };
+
+    statsSetters.setGamesPlayed((prev) => prev + 1);
+    if (isWin) {
+      statsSetters.setWins((prev) => prev + 1);
+      statsSetters.setCurrentStreak((prev) => prev + 1);
+      statsSetters.setMaxStreak((prev) =>
+        Math.max(prev, statsSetters.setCurrentStreak() + 1)
+      );
+    } else {
+      statsSetters.setLosses((prev) => prev + 1);
+      statsSetters.setCurrentStreak(0);
     }
   };
 
@@ -228,6 +302,19 @@ const WordChainsGame: React.FC = () => {
     setShowSettings(false);
   };
 
+  const statistics = {
+    gamesPlayed3,
+    winPercentage3,
+    currentStreak3,
+    maxStreak3,
+    losses3,
+    gamesPlayed4,
+    winPercentage4,
+    currentStreak4,
+    maxStreak4,
+    losses4,
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white">
       <header className="w-full bg-white shadow-sm flex items-center justify-between px-4 py-3 sticky top-0 z-10">
@@ -283,7 +370,10 @@ const WordChainsGame: React.FC = () => {
       <main className="flex-grow overflow-y-auto flex flex-col justify-between">
         <div className="font-sans w-full max-w-md mx-auto p-2 sm:p-5 flex flex-col">
           {showInstructions && (
-            <GameInstructions onClose={() => setShowInstructions(false)} />
+            <GameInstructions
+              isVisible={showInstructions}
+              onClose={() => setShowInstructions(false)}
+            />
           )}
 
           <div className="mb-6 text-center">
@@ -376,21 +466,18 @@ const WordChainsGame: React.FC = () => {
 
       {showSettings && (
         <Settings
+          isVisible={showSettings}
+          onClose={() => setShowSettings(false)}
           wordLength={wordLength}
           onWordLengthChange={handleWordLengthChange}
-          onClose={() => setShowSettings(false)}
         />
       )}
 
       {showStatistics && (
         <Statistics
-          gamesPlayed={gamesPlayed}
-          winPercentage={
-            gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 100) : 0
-          }
-          currentStreak={currentStreak}
-          maxStreak={maxStreak}
+          isVisible={showStatistics}
           onClose={() => setShowStatistics(false)}
+          {...statistics}
         />
       )}
     </div>
