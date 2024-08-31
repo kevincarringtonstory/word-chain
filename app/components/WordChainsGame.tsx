@@ -235,7 +235,7 @@ const WordChainsGame: React.FC = () => {
   return (
     <div className="flex flex-col h-screen bg-white">
       <div className="flex-1 flex flex-col w-full max-w-lg mx-auto p-2 sm:p-4">
-        <header className="w-full bg-white shadow-sm flex items-center justify-between mb-4 sm:mb-6 relative">
+        <header className="w-full bg-white shadow-sm flex items-center justify-between mb-2 sm:mb-4 relative">
           <button
             className="text-gray-600 font-bold text-lg sm:text-xl p-2 absolute left-0"
             onClick={() => setShowInstructions(true)}
@@ -252,7 +252,7 @@ const WordChainsGame: React.FC = () => {
               ></path>
             </svg>
           </button>
-          <h1 className="text-2xl sm:text-3xl font-bold flex-grow text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold flex-grow text-center py-2">
             WORD CHAIN
           </h1>
           <div className="flex absolute right-0">
@@ -288,7 +288,7 @@ const WordChainsGame: React.FC = () => {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col justify-between mt-4 sm:mt-6">
+        <main className="flex-1 flex flex-col justify-between mt-2 sm:mt-4">
           {showInstructions && (
             <GameInstructions
               isVisible={showInstructions}

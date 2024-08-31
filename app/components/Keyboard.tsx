@@ -4,14 +4,14 @@ interface KeyboardProps {
   onKeyPress: (key: string) => void;
   onEnter: () => void;
   onBackspace: () => void;
-  disabledKeys?: Set<string>; // Make this prop optional
+  disabledKeys?: Set<string>;
 }
 
 const Keyboard: React.FC<KeyboardProps> = ({
   onKeyPress,
   onEnter,
   onBackspace,
-  disabledKeys = new Set(), // Provide a default empty Set
+  disabledKeys = new Set(),
 }) => {
   const keys = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -40,20 +40,17 @@ const Keyboard: React.FC<KeyboardProps> = ({
   );
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="keyboard w-full max-w-[500px] h-[200px] mx-auto flex flex-col justify-between">
       {keys.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex justify-center mb-1 sm:mb-2">
+        <div key={rowIndex} className="flex justify-center gap-[1%]">
           {row.map((key) => (
             <button
               key={key}
               className={`
-                m-0.5 px-1 py-2 sm:py-3 rounded text-xs sm:text-sm font-bold
-                ${
-                  key === 'ENTER' || key === 'BACKSPACE'
-                    ? 'w-14 sm:w-16 bg-gray-300 text-gray-800'
-                    : 'w-7 sm:w-8 bg-gray-200 text-gray-800'
-                }
+                h-[60px] rounded text-xs sm:text-sm font-bold
+                ${key === 'ENTER' || key === 'BACKSPACE' ? 'w-[15%]' : 'w-[9%]'}
                 ${disabledKeys.has(key) ? 'opacity-50 cursor-not-allowed' : ''}
+                bg-gray-200 text-gray-800
                 active:bg-gray-400 transition-colors duration-100
                 flex items-center justify-center uppercase
               `}
