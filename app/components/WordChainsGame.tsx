@@ -319,8 +319,8 @@ const WordChainsGame: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      <header className="w-full bg-white shadow-sm flex items-center justify-between px-4 py-3 sticky top-0 z-10">
+    <div className="flex flex-col h-screen bg-white">
+      <header className="w-full bg-white shadow-sm flex items-center justify-between px-4 py-2 sticky top-0 z-10">
         <button
           className="text-gray-600 font-bold text-lg sm:text-xl p-2"
           onClick={() => setShowInstructions(true)}
@@ -370,8 +370,8 @@ const WordChainsGame: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-grow overflow-y-auto flex flex-col">
-        <div className="font-sans w-full max-w-md mx-auto p-2 sm:p-5 flex flex-col flex-grow">
+      <main className="flex-grow flex flex-col">
+        <div className="font-sans w-full max-w-md mx-auto p-2 flex flex-col flex-grow">
           {showInstructions && (
             <GameInstructions
               isVisible={showInstructions}
@@ -379,37 +379,37 @@ const WordChainsGame: React.FC = () => {
             />
           )}
 
-          <div className="mb-6 text-center">
-            <div className="flex justify-center items-center space-x-6 mb-4">
+          <div className="mb-4 text-center">
+            <div className="flex justify-center items-center space-x-4 mb-2">
               <div
                 key={
                   state.attempts.length > 0
                     ? state.attempts[state.attempts.length - 1]
                     : state.startWord
                 }
-                className="text-4xl font-bold p-4 bg-blue-100 rounded-lg shadow-md spin-animation"
+                className="text-3xl sm:text-4xl font-bold p-2 sm:p-4 bg-blue-100 rounded-lg shadow-md spin-animation"
               >
                 {state.attempts.length > 0
                   ? state.attempts[state.attempts.length - 1]
                   : state.startWord}
               </div>
-              <div className="text-3xl font-bold">➔</div>
-              <div className="text-4xl font-bold p-4 bg-green-100 rounded-lg shadow-md">
+              <div className="text-2xl sm:text-3xl font-bold">➔</div>
+              <div className="text-3xl sm:text-4xl font-bold p-2 sm:p-4 bg-green-100 rounded-lg shadow-md">
                 {state.endWord}
               </div>
             </div>
-            <p className="mt-4 text-xl">
+            <p className="mt-2 text-lg sm:text-xl">
               Starting Word: <strong>{state.startWord}</strong>
             </p>
           </div>
 
-          <div className="grid grid-cols-5 gap-2 mb-4">
+          <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4">
             {Array(10)
               .fill(null)
               .map((_, index) => (
                 <div
                   key={index}
-                  className={`border p-2 text-center h-10 flex items-center justify-center ${
+                  className={`border p-1 sm:p-2 text-center h-8 sm:h-10 flex items-center justify-center text-sm sm:text-base ${
                     index < state.attempts.length ? 'bg-gray-100' : ''
                   }`}
                 >
@@ -419,7 +419,7 @@ const WordChainsGame: React.FC = () => {
           </div>
 
           {!state.gameOver && (
-            <div className="mb-4">
+            <div className="mb-2 sm:mb-4">
               <input
                 type="text"
                 value={state.inputWord}
@@ -429,7 +429,7 @@ const WordChainsGame: React.FC = () => {
                     inputWord: e.target.value.toLowerCase(),
                   }))
                 }
-                className="w-full py-6 px-4 border-2 border-blue-300 rounded-lg text-3xl text-center font-bold tracking-wider focus:outline-none focus:border-blue-500 transition-colors leading-normal"
+                className="w-full py-4 sm:py-6 px-4 border-2 border-blue-300 rounded-lg text-2xl sm:text-3xl text-center font-bold tracking-wider focus:outline-none focus:border-blue-500 transition-colors leading-normal"
                 maxLength={wordLength}
                 readOnly
               />
