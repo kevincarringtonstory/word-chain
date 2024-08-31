@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface GameInstructionsProps {
   isVisible: boolean;
@@ -9,9 +9,36 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({
   isVisible,
   onClose,
 }) => {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    if (isVisible) {
+      // Delay the animation slightly to ensure the component is rendered
+      setTimeout(() => setAnimate(true), 50);
+    } else {
+      setAnimate(false);
+    }
+  }, [isVisible]);
+
+  if (!isVisible) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-white rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[90vh] overflow-y-auto">
+    <div
+      className={`fixed inset-0 flex items-center justify-center z-50 p-2 sm:p-4
+                  transition-all duration-300 ease-out
+                  ${
+                    animate ? 'bg-black bg-opacity-50' : 'bg-black bg-opacity-0'
+                  }`}
+    >
+      <div
+        className={`bg-white rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[90vh] overflow-y-auto
+                    transition-all duration-300 ease-out
+                    ${
+                      animate
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    }`}
+      >
         <div className="sticky top-0 bg-white z-10 p-4 border-b">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl sm:text-3xl font-bold">How to Play</h2>
@@ -38,11 +65,11 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({
                 CAT
               </div>
               <div className="text-sm sm:text-base">→</div>
-              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm">
+              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm spin-animation">
                 COT
               </div>
               <div className="text-sm sm:text-base">→</div>
-              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm">
+              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm spin-animation">
                 DOT
               </div>
               <div className="text-sm sm:text-base">→</div>
