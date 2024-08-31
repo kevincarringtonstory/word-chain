@@ -19,34 +19,33 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({ onClose }) => {
         <div className="p-4 sm:p-6 space-y-4">
           <div className="space-y-2 sm:space-y-4">
             <p>
-              1. Start with the given word and change one letter at a time to
-              reach the End word.
+              1. Start with the blue word and change one letter at a time to
+              reach the green word.
             </p>
-            <p>2. Each new word must be a valid 3-letter word.</p>
-            <p>
-              3. Reach the target word in 10 moves or less for higher score.
-            </p>
+            <p>2. Each new word must be a valid English word.</p>
+            <p>3. The word length must remain the same throughout.</p>
+            <p>4. Reach the green word in the fewest moves possible.</p>
           </div>
           <hr className="my-4 sm:my-6" />
           <div>
-            <h3 className="text-xl sm:text-2xl font-semibold mb-4">Example:</h3>
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-              <div className="bg-green-500 text-white p-2 sm:p-4 rounded text-lg sm:text-2xl">
+            <h3 className="text-lg sm:text-xl font-semibold mb-2">Example:</h3>
+            <div className="flex flex-nowrap justify-center items-center gap-1 sm:gap-2 mb-2 sm:mb-4">
+              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm spin-animation">
                 CAT
               </div>
-              <div className="bg-blue-500 text-white p-2 sm:p-4 rounded text-lg sm:text-2xl">
+              <div className="text-sm sm:text-base">→</div>
+              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm">
                 COT
               </div>
-              <div className="bg-blue-500 text-white p-2 sm:p-4 rounded text-lg sm:text-2xl">
+              <div className="text-sm sm:text-base">→</div>
+              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm">
                 DOT
               </div>
-              <div className="bg-blue-500 text-white p-2 sm:p-4 rounded text-lg sm:text-2xl">
+              <div className="text-sm sm:text-base">→</div>
+              <div className="text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-green-100 rounded-md shadow-sm">
                 DOG
               </div>
             </div>
-            <p className="text-center text-lg sm:text-xl mb-4 sm:mb-6">
-              CAT → COT → DOT → DOG
-            </p>
           </div>
           <hr className="my-4 sm:my-6" />
           <p className="text-center font-bold text-xl sm:text-2xl">

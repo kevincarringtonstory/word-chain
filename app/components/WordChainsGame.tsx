@@ -6,7 +6,8 @@ import { findWordChain } from '@/app/utils/wordChainSolver';
 import Notification from './Notification';
 import Keyboard from './Keyboard';
 import Settings from './Settings';
-import Statistics from './Statistics'; // Add this line
+import Statistics from './Statistics';
+import GameInstructions from './GameInstructions';
 
 interface GameState {
   startWord: string;
@@ -282,24 +283,7 @@ const WordChainsGame: React.FC = () => {
       <main className="flex-grow overflow-y-auto flex flex-col justify-between">
         <div className="font-sans w-full max-w-md mx-auto p-2 sm:p-5 flex flex-col">
           {showInstructions && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-4 rounded-lg max-w-sm">
-                <h2 className="text-xl font-bold mb-2">How to Play</h2>
-                <p>
-                  Change one letter at a time to transform the start word into
-                  the end word.
-                </p>
-                <p className="mt-2">
-                  You have 10 attempts to reach the target word.
-                </p>
-                <button
-                  className="mt-4 p-2 bg-blue-500 text-white rounded"
-                  onClick={() => setShowInstructions(false)}
-                >
-                  Got it!
-                </button>
-              </div>
-            </div>
+            <GameInstructions onClose={() => setShowInstructions(false)} />
           )}
 
           <div className="mb-6 text-center">

@@ -52,7 +52,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
                 m-0.5 px-1 py-3 rounded text-sm font-bold
                 ${
                   key === 'ENTER' || key === 'BACKSPACE'
-                    ? 'w-auto flex-grow bg-gray-300 text-gray-800'
+                    ? 'w-16 sm:w-20 bg-gray-300 text-gray-800' // Adjusted width for ENTER and BACKSPACE
                     : 'w-8 sm:w-10 bg-gray-200 text-gray-800'
                 }
                 ${disabledKeys.has(key) ? 'opacity-50 cursor-not-allowed' : ''}
