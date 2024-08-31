@@ -51,11 +51,17 @@ const Settings: React.FC<SettingsProps> = ({
       }`}
     >
       <div
-        className={`bg-white p-8 rounded-xl max-w-md w-full shadow-2xl transition-all duration-300 ease-out ${
-          animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
+        className={`bg-white p-8 rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[90vh] overflow-y-auto
+          transition-all duration-300 ease-out ${
+            animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}
       >
-        <h2 className="text-3xl font-bold mb-6 text-gray-800">Settings</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold text-gray-800">Settings</h2>
+          <button onClick={handleClose} className="text-2xl sm:text-3xl">
+            &times;
+          </button>
+        </div>
         <div className="mb-6">
           <label className="block text-lg font-medium text-gray-700 mb-3">
             Word Length
@@ -76,12 +82,6 @@ const Settings: React.FC<SettingsProps> = ({
             ))}
           </div>
         </div>
-        <button
-          className="w-full text-base sm:text-lg md:text-xl font-bold p-1 sm:p-2 bg-blue-100 rounded-md shadow-sm hover:bg-blue-200 transition-colors duration-200"
-          onClick={handleClose}
-        >
-          Close
-        </button>
       </div>
     </div>
   );

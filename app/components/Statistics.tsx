@@ -62,9 +62,10 @@ const Statistics: React.FC<StatisticsProps> = ({
       }`}
     >
       <div
-        className={`bg-white p-6 rounded-lg max-w-sm w-full transition-all duration-300 ease-out ${
-          animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
+        className={`bg-white p-6 rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[90vh] overflow-y-auto
+          transition-all duration-300 ease-out ${
+            animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">STATISTICS</h2>
