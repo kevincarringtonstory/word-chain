@@ -319,7 +319,7 @@ const WordChainsGame: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white">
       <header className="w-full bg-white shadow-sm flex items-center justify-between px-4 py-2 sticky top-0 z-10">
         <button
           className="text-gray-600 font-bold text-lg sm:text-xl p-2"
@@ -370,8 +370,8 @@ const WordChainsGame: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-grow flex flex-col">
-        <div className="font-sans w-full max-w-md mx-auto p-2 flex flex-col flex-grow">
+      <main className="flex-1 flex flex-col">
+        <div className="flex-1 font-sans w-full max-w-md mx-auto p-2 sm:p-5 flex flex-col">
           {showInstructions && (
             <GameInstructions
               isVisible={showInstructions}
