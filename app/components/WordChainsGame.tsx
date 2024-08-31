@@ -233,7 +233,7 @@ const WordChainsGame: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white overflow-hidden">
+    <div className="flex flex-col h-screen bg-white">
       <div className="flex-1 flex flex-col w-full max-w-lg mx-auto p-2 sm:p-4 relative">
         <header className="w-full max-w-[500px] mx-auto bg-white shadow-sm flex items-center justify-between mb-2 sm:mb-4 relative">
           <button
@@ -288,7 +288,7 @@ const WordChainsGame: React.FC = () => {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col justify-between mt-2 sm:mt-4 overflow-hidden">
+        <main className="flex-1 flex flex-col justify-between overflow-hidden">
           {showInstructions && (
             <GameInstructions
               isVisible={showInstructions}
@@ -296,7 +296,7 @@ const WordChainsGame: React.FC = () => {
             />
           )}
 
-          <div className="flex-1 flex flex-col justify-center pt-4 sm:pt-6 md:pt-8 overflow-hidden">
+          <div className="flex-1 flex flex-col">
             <div className="mb-2 sm:mb-4 text-center">
               <div className="flex justify-center items-center space-x-4 mb-2">
                 <div
@@ -321,20 +321,22 @@ const WordChainsGame: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex-grow flex flex-col justify-center overflow-hidden">
-              <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4 overflow-y-auto max-h-[40vh]">
-                {Array(10)
-                  .fill(null)
-                  .map((_, index) => (
-                    <div
-                      key={index}
-                      className={`border p-1 sm:p-2 text-center h-8 sm:h-10 flex items-center justify-center text-sm sm:text-base ${
-                        index < state.attempts.length ? 'bg-gray-100' : ''
-                      }`}
-                    >
-                      {state.attempts[index] || ''}
-                    </div>
-                  ))}
+            <div className="flex-1 flex flex-col justify-between min-h-0">
+              <div className="flex-1 overflow-y-auto">
+                <div className="grid grid-cols-5 gap-1 sm:gap-2 mb-2 sm:mb-4">
+                  {Array(10)
+                    .fill(null)
+                    .map((_, index) => (
+                      <div
+                        key={index}
+                        className={`border p-1 sm:p-2 text-center h-8 sm:h-10 flex items-center justify-center text-sm sm:text-base ${
+                          index < state.attempts.length ? 'bg-gray-100' : ''
+                        }`}
+                      >
+                        {state.attempts[index] || ''}
+                      </div>
+                    ))}
+                </div>
               </div>
 
               {!state.gameOver && (
