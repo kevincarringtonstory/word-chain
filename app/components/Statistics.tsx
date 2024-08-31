@@ -103,7 +103,7 @@ const Statistics: React.FC<StatisticsProps> = ({
   );
 };
 
-const StatItem: React.FC<{ label: string; value: number }> = ({
+const StatItem: React.FC<{ label: string; value: string }> = ({
   label,
   value,
 }) => (

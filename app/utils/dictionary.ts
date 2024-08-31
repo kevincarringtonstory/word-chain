@@ -12,6 +12,7 @@ const dictionary = [
   'ant',
   'any',
   'ape',
+  'hog',
   'apt',
   'arc',
   'are',
