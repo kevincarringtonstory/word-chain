@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { dictionary, fourLetterWords } from '@/app/utils/dictionary';
 import { findWordChain } from '@/app/utils/wordChainSolver';
+import { validateWordChange } from '@/app/utils/wordChainValidation';
 import { Stats } from '@/app/components/Statistics';
 import Notification from './Notification';
 import Keyboard from './Keyboard';
@@ -52,6 +53,8 @@ const WordChainsGame: React.FC = () => {
   const [gameCompletionMessage, setGameCompletionMessage] = useState('');
   const [isGameWon, setIsGameWon] = useState(false);
 
+  const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     const initialState = getInitialState();
     setState(initialState);
@@ -61,14 +64,6 @@ const WordChainsGame: React.FC = () => {
     const stats4Data = localStorage.getItem('game-stats-4') || 'default';
     setStats3(new Stats(stats3Data));
     setStats4(new Stats(stats4Data));
-
-    // Add event listener for physical keyboard
-    window.addEventListener('keydown', handleKeyDown);
-
-    // Clean up the event listener
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [wordLength]);
 
   useEffect(() => {
@@ -101,31 +96,33 @@ const WordChainsGame: React.FC = () => {
     };
   };
 
-  const isValidWord = (word: string) =>
-    wordLength === 3
-      ? dictionary.includes(word)
-      : fourLetterWords.includes(word);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState((prev) => ({ ...prev, inputWord: e.target.value.toLowerCase() }));
   };
 
   const handleSubmit = () => {
+    console.log('handleSubmit called');
     const { currentWord, inputWord, endWord, attempts } = state;
 
-    if (inputWord.length !== wordLength) {
-      showNotification(`Must be ${wordLength} letters`);
-      return;
-    }
-    if (
-      inputWord.split('').filter((char, i) => char !== currentWord[i])
-        .length !== 1
-    ) {
-      showNotification('Only one letter change.');
-      return;
-    }
-    if (!isValidWord(inputWord)) {
-      showNotification('Not in word list');
+    const validation = validateWordChange(currentWord, inputWord, wordLength);
+    console.log('Validation result:', validation);
+    if (!validation.isValid) {
+      // Clear any existing timeout
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+
+      setState((prev) => ({
+        ...prev,
+        notificationMessage: validation.message,
+        showNotification: true,
+      }));
+
+      // Set a new timeout and store the reference
+      notificationTimeoutRef.current = setTimeout(() => {
+        setState((prev) => ({ ...prev, showNotification: false }));
+      }, 1500);
+
       return;
     }
 
@@ -138,14 +135,11 @@ const WordChainsGame: React.FC = () => {
       inputWord: '',
       attempts: newAttempts,
       gameOver: gameOver,
+      showNotification: false,
     }));
 
     if (gameOver) {
       handleGameEnd(inputWord === endWord);
-      setState((prev) => ({
-        ...prev,
-        gameOver: true,
-      }));
     }
   };
 
@@ -224,19 +218,6 @@ const WordChainsGame: React.FC = () => {
   const handleEnter = () => {
     if (state.gameOver) return;
     handleSubmit();
-  };
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (state.gameOver) return;
-
-    const key = event.key.toUpperCase();
-    if (key === 'ENTER') {
-      handleSubmit();
-    } else if (key === 'BACKSPACE') {
-      handleBackspace();
-    } else if (/^[A-Z]$/.test(key)) {
-      handleKeyPress(key);
-    }
   };
 
   const handleWordLengthChange = (length: number) => {
