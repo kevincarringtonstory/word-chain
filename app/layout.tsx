@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   keywords: 'word game, puzzle, vocabulary, chain, word chain',
   authors: [{ name: 'Kevin Carrington' }],
   openGraph: {
-    title: 'Word Chain\u00A0- A game where words collide :) test',
+    title: 'Word Chain\u00A0- A game where words collide',
     description: 'Word Chain - A game where words collide',
     url: 'https://wordchain.us',
     siteName: 'Word Chain',
