@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     siteName: 'Word Chain',
     images: [
       {
-        url: 'https://wordchain.us/wordchain_og.png',
+        url: 'https://wordchain.us/wordchain_og_1200x630.png',
         width: 1200,
         height: 630,
         alt: 'Word Chain Game',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Word Chain - A game where words collide',
     description: 'Word Chain - A game where words collide',
-    images: ['https://wordchain.us/wordchain_og.png'],
+    images: ['https://wordchain.us/wordchain_og_1200x630.png'],
   },
   manifest: '/site.webmanifest',
   icons: {
