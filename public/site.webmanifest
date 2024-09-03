@@ -1,7 +1,7 @@
 {
   "name": "Word Chain",
   "short_name": "Word Chain",
-  "description": "A word transformation game where you change one letter at a time",
+  "description": "Word Chain - A game where words collide",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

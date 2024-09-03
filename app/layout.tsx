@@ -11,9 +11,8 @@ export const metadata: Metadata = {
   keywords: 'word game, puzzle, vocabulary, chain, word chain',
   authors: [{ name: 'Kevin Carrington' }],
   openGraph: {
-    title: 'Word Chain - A game where words collide',
-    description:
-      'Transform words one letter at a time. Play daily and unlimited modes.',
+    title: 'Word Chain - A game where words collide :)',
+    description: 'Word Chain - A game where words collide',
     url: 'https://wordchain.us',
     siteName: 'Word Chain',
     images: [
@@ -29,9 +28,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Word Chain | An addictive word transformation game',
-    description:
-      'Transform words one letter at a time. Play daily and unlimited modes.',
+    title: 'Word Chain - A game where words collide',
+    description: 'Word Chain - A game where words collide',
     images: ['https://wordchain.us/wordchain_og.png'],
   },
   manifest: '/site.webmanifest',
