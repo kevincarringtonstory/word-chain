@@ -18,9 +18,10 @@ export const metadata: Metadata = {
     siteName: 'Word Chain',
     images: [
       {
-        url: 'https://wordchain.us/wordchain-og.png', // Update this URL
+        url: 'https://wordchain.us/wordchain_og.png',
         width: 1200,
         height: 630,
+        alt: 'Word Chain Game',
       },
     ],
     locale: 'en_US',
@@ -31,11 +32,9 @@ export const metadata: Metadata = {
     title: 'Word Chain | An addictive word transformation game',
     description:
       'Transform words one letter at a time. Play daily and unlimited modes.',
-    images: ['https://your-word-chain-game.com/twitter-image.png'],
+    images: ['https://wordchain.us/wordchain_og.png'],
   },
-  verification: {
-    google: 'your-google-site-verification-code',
-  },
+  manifest: '/site.webmanifest',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -49,7 +48,6 @@ export const metadata: Metadata = {
       { rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#52b8d5' },
     ],
   },
-  manifest: '/site.webmanifest',
   appleWebApp: {
     title: 'Word Chain',
     statusBarStyle: 'default',
