@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { dictionary, fourLetterWords } from '@/app/utils/dictionary';
 import { findWordChain } from '@/app/utils/wordChainSolver';
 import { validateWordChange } from '@/app/utils/wordChainValidation';
@@ -55,32 +55,17 @@ const WordChainsGame: React.FC = () => {
 
   const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const initialState = getInitialState();
-    setState(initialState);
-
-    // Load stats from local storage
-    const stats3Data = localStorage.getItem('game-stats-3') || 'default';
-    const stats4Data = localStorage.getItem('game-stats-4') || 'default';
-    setStats3(new Stats(stats3Data));
-    setStats4(new Stats(stats4Data));
-  }, [wordLength]);
-
-  useEffect(() => {
-    // Save stats to local storage whenever they change
-    localStorage.setItem('game-stats-3', stats3.toString());
-    localStorage.setItem('game-stats-4', stats4.toString());
-  }, [stats3, stats4]);
-
-  const getInitialState = (): GameState => {
-    const validWords = wordLength === 3 ? dictionary : fourLetterWords;
-    let start, end, solution;
+  const getInitialState = useCallback((): GameState => {
+    const validWords = (wordLength === 3 ? dictionary : fourLetterWords).filter(
+      (word): word is string => word !== null && word !== undefined
+    );
+    let start: string, end: string, solution: string[] | null;
 
     do {
       start = validWords[Math.floor(Math.random() * validWords.length)];
       end = validWords[Math.floor(Math.random() * validWords.length)];
       solution = findWordChain(start, end, validWords);
-    } while (start === end || !solution);
+    } while (start === end || !solution || solution.length === 0);
 
     return {
       startWord: start,
@@ -94,7 +79,24 @@ const WordChainsGame: React.FC = () => {
       notificationMessage: '',
       showNotification: false,
     };
-  };
+  }, [wordLength]);
+
+  useEffect(() => {
+    const initialState = getInitialState();
+    setState(initialState);
+
+    // Load stats from local storage
+    const stats3Data = localStorage.getItem('game-stats-3') || 'default';
+    const stats4Data = localStorage.getItem('game-stats-4') || 'default';
+    setStats3(new Stats(stats3Data));
+    setStats4(new Stats(stats4Data));
+  }, [wordLength, getInitialState]);
+
+  useEffect(() => {
+    // Save stats to local storage whenever they change
+    localStorage.setItem('game-stats-3', stats3.toString());
+    localStorage.setItem('game-stats-4', stats4.toString());
+  }, [stats3, stats4]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState((prev) => ({ ...prev, inputWord: e.target.value.toLowerCase() }));
