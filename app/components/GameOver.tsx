@@ -5,6 +5,8 @@ interface GameOverProps {
   isWin: boolean;
   attempts: number;
   endWord: string;
+  optimalSolution: string[];
+  startWord: string;
 }
 
 const GameOver: React.FC<GameOverProps> = ({
@@ -12,6 +14,7 @@ const GameOver: React.FC<GameOverProps> = ({
   isWin,
   attempts,
   endWord,
+  optimalSolution,
 }) => {
   return (
     <div className="text-center">
@@ -23,6 +26,16 @@ const GameOver: React.FC<GameOverProps> = ({
           ? `Solved in ${attempts} ${attempts === 1 ? 'attempt' : 'attempts'}`
           : 'Better luck next time!'}
       </p>
+      <div className="mb-4">
+        <h3 className="text-xl font-semibold mb-2">Optimal Solution:</h3>
+        <div className="flex flex-wrap justify-center gap-2">
+          {optimalSolution.map((word, index) => (
+            <span key={index} className="bg-blue-100 px-2 py-1 rounded">
+              {word}
+            </span>
+          ))}
+        </div>
+      </div>
       <button
         onClick={onPlayAgain}
         className="w-full p-2 sm:p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors"

@@ -23,6 +23,7 @@ interface GameState {
   solution: string[];
   notificationMessage: string;
   showNotification: boolean;
+  optimalSolution: string[];
 }
 
 const WordChainsGame: React.FC = () => {
@@ -37,6 +38,7 @@ const WordChainsGame: React.FC = () => {
     solution: [],
     notificationMessage: '',
     showNotification: false,
+    optimalSolution: [],
   });
 
   const [showInstructions, setShowInstructions] = useState(true);
@@ -78,6 +80,7 @@ const WordChainsGame: React.FC = () => {
       solution: solution || [],
       notificationMessage: '',
       showNotification: false,
+      optimalSolution: solution || [],
     };
   }, [wordLength]);
 
@@ -361,6 +364,8 @@ const WordChainsGame: React.FC = () => {
                   isWin={state.currentWord === state.endWord}
                   attempts={state.attempts.length}
                   endWord={state.endWord}
+                  optimalSolution={state.optimalSolution}
+                  startWord={state.startWord}
                 />
               )}
             </div>
